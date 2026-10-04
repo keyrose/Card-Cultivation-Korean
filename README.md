@@ -2,18 +2,27 @@
 
 Steam 게임 **Card Cultivation (修仙卡牌, App 2963600)** 비공식 한국어 패치 작업 저장소.
 
-게임 내 **설정 → Language → `한국어`** 를 선택하면 한국어로 표시된다.
-(영어 열을 한국어로 교체하는 방식이라, 패치 후에는 영어 대신 한국어가 나온다.)
+## 다운로드
+
+### [⬇ 한글 패치 v1.0.0 다운로드](https://github.com/keyrose/Card-Cultivation-Korean/releases/download/v1.0.0/CardCultivation_KoreanPatch_v1.0.0.zip)
+
+([릴리스 페이지](https://github.com/keyrose/Card-Cultivation-Korean/releases/latest) · 게임 버전 2.3.0.11_beta 기준)
+
+1. 게임을 종료하고, zip 을 풀어 `CardCultivation_KoreanPatch.exe` 실행 → **1번(설치)**
+2. 게임 실행 → **설정(Options) → Language → `한국어`**
+3. 제거는 같은 exe 에서 **2번(원본으로 복구)**, 스팀 업데이트 후 한글이 풀리면 다시 1번
+
+(영어 언어 자리를 한국어로 교체하는 방식이라, 패치 후에는 영어 대신 한국어가 나온다.)
 
 ![타이틀](docs/screenshot_title.jpg)
 ![게임 화면](docs/screenshot_intro.jpg)
 
 ## 진행 현황
 - 텍스트 14,517개 항목 전부 번역 (중국어 원문 기준, 영어 참고)
-- 이미지 속 글자 약 260개 한글화: 타이틀 로고, 메뉴/버튼, 본문 아이콘(품질·오행), 카드 배지(경지·품질),
-  이펙트 글자, 튜토리얼 카드/설명 이미지 (`tools/image_specs*.py`)
+- 이미지 속 글자 약 1,600개 한글화 (`tools/image_specs*.py`): 타이틀 로고, 메뉴/버튼, 본문 아이콘(품질·오행),
+  카드 배지(경지·품질), 이펙트 글자, 튜토리얼 카드/설명 이미지, 무공서 표지, 아이템·스킬·무기 아이콘
   - 언어별 이미지는 간체 중국어 원본으로 만든 한국어 이미지를 4개 언어 번들 모두에 넣는다
-  - 미처리: 책 표지·아이템 아이콘 속 아주 작은 장식용 글씨
+  - 미처리: 읽을 수 없는 장식 문양(부적 문양, 종 표면 무늬 등)
 
 ## 구조
 ```
