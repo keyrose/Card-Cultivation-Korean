@@ -281,11 +281,12 @@ def apply(img, sp):
 
 # ---- 타이틀 로고: 영어판 로고(카드 부채 + 두 줄 붓글씨 + 붉은 낙관) 구성을 따른다
 #   Card / Cultivation / Biography → 카드 / 수선 / 전
+LOGO_DRY = {"gaps": 0.045, "angle": -5.0, "streak": 0.6, "rough": 0.22, "tone": 0.6, "floor": 0.3}
 LOGO_SPECS = [
     {"text": "카드", "font": "brush", "mask": "none", "text_box": (330, 92, 740, 238),
-     "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05},
+     "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05, "dry": LOGO_DRY},
     {"text": "수선", "font": "brush", "mask": "none", "text_box": (250, 218, 820, 372),
-     "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05},
+     "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05, "dry": LOGO_DRY},
     # 붉은 낙관 속 흰 글자 Biography → 전
     {"text": "전", "font": "brush", "mask": "light", "thresh": 150, "box": (805, 55, 985, 120),
      "fill": (248, 244, 236), "dilate": 2, "scale": 0.95},

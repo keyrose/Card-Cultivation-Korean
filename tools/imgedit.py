@@ -140,6 +140,42 @@ def _render(text, font, size, layout, fill, stroke, sw):
     return im.crop(im.getbbox())
 
 
+def dry_brush(t, gaps=0.2, angle=-6.0, streak=0.35, rough=0.5, tone=0.25, seed=7, floor=0.0):
+    """마른 붓 질감: 획 방향(대략 가로)으로 갈라진 틈, 거친 가장자리, 먹 농담.
+
+    gaps: 갈라진 틈 비율, angle: 붓질 방향(도), streak: 틈 길이(글자 폭 대비),
+    rough: 가장자리 거칠기, tone: 먹 농담 변화 폭, floor: 틈 안에 남는 먹 농도(0~1)
+    """
+    rng = np.random.default_rng(seed)
+    a = np.array(t.getchannel("A")).astype(np.float32) / 255
+    rgb = np.array(t)[..., :3].astype(np.float32)
+    H, W = a.shape
+    # 붓질 방향으로 길게 늘인 잡음 → 가는 틈 줄무늬
+    L = max(9, int(W * streak) | 1)
+    k = np.zeros((L, L), np.float32)
+    k[L // 2, :] = 1
+    k = cv2.warpAffine(k, cv2.getRotationMatrix2D((L / 2, L / 2), angle, 1.0), (L, L))
+    k /= k.sum()
+    n = cv2.filter2D(rng.random((H, W)).astype(np.float32), -1, k, borderType=cv2.BORDER_REFLECT)
+    n = cv2.GaussianBlur(n, (0, 0), 0.8)
+    n = (n - n.mean()) / (n.std() + 1e-6)
+    thr = np.quantile(n[a > 0.5], gaps) if (a > 0.5).any() else -9
+    split = np.clip((n - thr) / 0.25 + 0.5, 0, 1)  # 틈은 0 쪽으로 부드럽게
+    split = floor + (1 - floor) * split  # 틈도 완전히 비지 않고 옅은 먹이 남음
+    # 가장자리 거칠기: 가장자리 부근에서 작은 잡음으로 깎기
+    dist = cv2.distanceTransform((a > 0.5).astype(np.uint8), cv2.DIST_L2, 3)
+    edge = np.clip(dist / max(2.0, min(H, W) * 0.02), 0, 1)
+    n2 = cv2.GaussianBlur(rng.random((H, W)).astype(np.float32), (0, 0), 1.2)
+    n2 = (n2 - n2.min()) / (n2.max() - n2.min() + 1e-6)
+    keep_edge = np.where(edge < 1, (n2 > rough * (1 - edge)).astype(np.float32), 1)
+    a2 = a * split * keep_edge
+    # 먹 농담 (붓질 방향 잡음을 그대로 사용)
+    shade = 1 + tone * np.clip(-n * 0.5, -1, 1)
+    rgb = np.clip(rgb * shade[..., None] + (shade[..., None] - 1) * 40, 0, 255)
+    out = np.dstack([rgb, a2 * 255]).astype(np.uint8)
+    return Image.fromarray(out, "RGBA")
+
+
 def fit_text(text, font, bw, bh, layout="h", fill=(255, 255, 255, 255), stroke=None,
              stroke_w=0.0, scale=1.0):
     """(bw, bh) 영역에 맞는 가장 큰 글자 이미지. 작은 글자도 깔끔하도록 4배로 그려 축소한다."""
@@ -220,6 +256,8 @@ def relabel(img: Image.Image, spec: dict) -> Image.Image:
                      fill, stroke, sw_ratio, spec.get("scale", 1.0))
         if sy != 1.0:
             t = t.resize((t.width, int(t.height * sy)), Image.LANCZOS)
+        if spec.get("dry"):
+            t = dry_brush(t, **spec["dry"])
         cx, cy = (tb[0] + tb[2]) / 2 + spec.get("dx", 0), (tb[1] + tb[3]) / 2 + spec.get("dy", 0)
         px, py = int(cx - t.width / 2), int(cy - t.height / 2)
         px, py = max(0, min(W - t.width, px)), max(0, min(H - t.height, py))
