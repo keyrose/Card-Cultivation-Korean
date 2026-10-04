@@ -281,8 +281,8 @@ def apply(img, sp):
 
 # ---- 타이틀 로고 (卡牌修仙 + 傳 낙관) → 카드수선 + 전
 LOGO_SPECS = [
-    {"text": "카드수선", "font": "brush", "mask": "dark", "thresh": 70, "box": (40, 0, 915, 376),
-     "text_box": (60, 20, 912, 360), "fill": (18, 18, 18), "dilate": 3, "bold": 0.025,
+    {"text": "카드수선", "font": "brush", "mask": "ink", "thresh": 135, "box": (40, 0, 930, 376),
+     "text_box": (60, 20, 912, 360), "fill": (18, 18, 18), "dilate": 6, "bold": 0.008,
      "stretch_y": 1.45},
     {"text": "전", "font": "callig", "mask": "light", "thresh": 140, "box": (925, 55, 1005, 235),
      "fill": (240, 228, 205), "dilate": 2, "scale": 0.9},

@@ -3,7 +3,7 @@
 relabel(img, spec) 의 spec 키
   text     그릴 한국어. "\n" 으로 줄바꿈, layout="v" 면 글자마다 세로로 쌓음
   font     "brush"(East Sea Dokdo) | "callig"(Song Myung) | "serif"(Noto Serif KR)
-  mask     지울 글자 픽셀 선택: light / dark / sat / alpha(전부 투명 처리) / none
+  mask     지울 글자 픽셀 선택: light / dark / ink / sat / alpha(전부 투명 처리) / none
   thresh   mask 임계값
   box      (x0, y0, x1, y1) 작업 영역 (기본: 이미지 전체)
   dilate   mask 팽창 픽셀
@@ -43,6 +43,8 @@ def _mask(arr, mode, thresh):
         return vis & (lum > (thresh or 150))
     if mode == "dark":
         return vis & (lum < (thresh or 80))
+    if mode == "ink":  # 먹색: 어둡고 채도 낮은 픽셀 (색 있는 배경 그림은 남김)
+        return vis & (lum < (thresh or 120)) & (sat < 0.3)
     if mode == "sat":
         return vis & (sat > (thresh or 0.35)) & (mx > 60)
     if mode == "alpha":
@@ -119,18 +121,19 @@ def _render(text, font, size, layout, fill, stroke, sw):
             y += h + gap
         return im.crop(im.getbbox())
     # 붓글씨 폰트의 마른 붓 틈(구멍)을 메워 단색 글자로: 외곽선/채움 층을 따로 그려 닫힘 연산
-    k = max(3, int(size * 0.06) | 1)
+    k = max(3, int(size * 0.035) | 1)
     kern = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     for color, width in ([(stroke, sw)] if stroke is not None and sw else []) + [(fill, 0)]:
         layer = draw(tuple(color[:3]) + (255,), width)
         a = cv2.morphologyEx(np.array(layer.getchannel("A")), cv2.MORPH_CLOSE, kern)
-        if width:  # 외곽선 층: 바깥과 이어지지 않은 구멍은 모두 메움
+        if width:  # 외곽선 층: 마른 붓 틈으로 생긴 작은 구멍만 메움 (ㅇ 속 같은 글자 안 공간은 유지)
             hole = (a < 128).astype(np.uint8)
-            n, cc = cv2.connectedComponents(hole, connectivity=4)
+            n, cc, st, _ = cv2.connectedComponentsWithStats(hole, connectivity=4)
             border = set(np.unique(np.concatenate([cc[0], cc[-1], cc[:, 0], cc[:, -1]])))
+            small = (size * 0.12) ** 2
             for i in range(1, n):
-                if i not in border:
+                if i not in border and st[i, 4] < small:
                     a[cc == i] = 255
         layer.putalpha(Image.fromarray(a).point(lambda v, m=color[3] if len(color) > 3 else 255: v * m // 255))
         im.alpha_composite(layer)
