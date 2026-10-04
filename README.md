@@ -4,7 +4,7 @@ Steam 게임 **Card Cultivation (修仙卡牌, App 2963600)** 비공식 한국�
 
 ## 다운로드
 
-### [⬇ 한글 패치 v1.0.0 다운로드](https://github.com/keyrose/Card-Cultivation-Korean/releases/download/v1.0.0/CardCultivation_KoreanPatch_v1.0.0.zip)
+### [⬇ 한글 패치 v1.0.1 다운로드](https://github.com/keyrose/Card-Cultivation-Korean/releases/download/v1.0.1/CardCultivation_KoreanPatch_v1.0.1.zip)
 
 ([릴리스 페이지](https://github.com/keyrose/Card-Cultivation-Korean/releases/latest) · 게임 버전 2.3.0.11_beta 기준)
 
@@ -59,7 +59,7 @@ GitHub Releases 의 `CardCultivation_KoreanPatch_vX.Y.Z.zip` 을 받아 exe 실�
 게임 폴더를 자동으로 찾고, 원본은 게임 폴더 `KoreanPatch_backup/` 에 보관한다. 2번으로 복구.
 게임 원본 파일은 배포하지 않고, 사용자 PC의 파일에 번역·글꼴·이미지를 직접 적용한다.
 
-릴리스 만들기: `cd tools && python release.py 1.0.0` → `dist/CardCultivation_KoreanPatch_v1.0.0.zip`
+릴리스 만들기: `cd tools && python release.py 1.0.0` → `dist/CardCultivation_KoreanPatch_v1.0.1.zip`
 (PyInstaller 필요: `pip install pyinstaller`)
 
 ## 빌드 & 설치 (개발용)

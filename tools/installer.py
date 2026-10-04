@@ -214,8 +214,8 @@ def install(game: Path, patch: Patch):
             print("    (게임에 없는 파일 - 건너뜀)")
             continue
         cur_sha = sha256(cur)
-        if bak.exists() and state.get(rel) == cur_sha:
-            src = bak  # 이미 패치됨 → 백업된 원본에서 다시 적용
+        if bak.exists() and (state.get(rel) == cur_sha or sha256(bak) == info["sha256"]):
+            src = bak  # 이미 패치됨, 또는 백업이 제작 기준 원본과 같음 → 백업에서 다시 적용
         else:
             bak.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(cur, bak)  # 첫 설치 또는 게임 업데이트 후: 현재 파일이 원본
