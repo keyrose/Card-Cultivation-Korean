@@ -1,1 +1,2 @@
 p1_04.json Talk_10090501_1: 중국어 잔존
+p2_16.json CardStoryNpc_LiuZhaoZhaoInTavern: 중국어 잔존

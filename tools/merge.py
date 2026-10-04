@@ -28,12 +28,16 @@ def main():
     for r in rows:
         keys_of[r["zh"]].append(r["key"])
 
+    fixes = json.loads((TRANS_DIR / "fixes.json").read_text(encoding="utf-8"))
     by_zh, problems = {}, []
     for p in sorted((TRANS_DIR / "raw").glob("*.json")):
         for k, v in json.loads(p.read_text(encoding="utf-8")).items():
             if k not in zh_of:
                 problems.append(f"{p.name} {k}: 알 수 없는 키")
                 continue
+            for f in fixes:  # 청크 간 표기 통일
+                if f["zh"] in zh_of[k]:
+                    v = v.replace(f["from"], f["to"])
             errs = check(zh_of[k], v)
             if errs:
                 problems.append(f"{p.name} {k}: {'; '.join(errs)}")
