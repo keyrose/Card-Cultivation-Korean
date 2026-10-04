@@ -281,7 +281,7 @@ def apply(img, sp):
 
 # ---- 타이틀 로고: 영어판 로고(카드 부채 + 두 줄 붓글씨 + 붉은 낙관) 구성을 따른다
 #   Card / Cultivation / Biography → 카드 / 수선 / 전
-LOGO_DRY = {"gaps": 0.045, "angle": -5.0, "streak": 0.6, "rough": 0.22, "tone": 0.6, "floor": 0.3}
+LOGO_DRY = {"gaps": 0.03, "angle": -5.0, "streak": 0.6, "rough": 0.2, "tone": 0.45, "floor": 0.45}
 LOGO_SPECS = [
     {"text": "카드", "font": "brush", "mask": "none", "text_box": (330, 92, 740, 238),
      "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05, "dry": LOGO_DRY},
@@ -319,6 +319,48 @@ def _fsr(arr, unknown):
     d = np.zeros_like(a3)
     cv2.xphoto.inpaint(a3, mask, d, cv2.xphoto.INPAINT_FSR_FAST)
     out[..., 3] = d[..., 0]
+    return out
+
+
+def _scrub_logo(out, m_en):
+    """복원 후 남은 먹 얼룩 정리 (영어 글자가 있던 근처만).
+
+    물결은 항상 밝은 청록이라 어둡거나 무채색인 픽셀은 얼룩: 물결 색으로 칠하고 투명도(선 모양)만
+    주변에서 이어 그린다. 부채 쪽은 무채색 어두운 픽셀만 다시 채운다 (짙은 청록 테두리는 유지).
+    """
+    import cv2
+    import numpy as np
+
+    def stats(o):
+        rgb = o[..., :3].astype(np.float32)
+        lum = rgb @ np.array([0.299, 0.587, 0.114], np.float32)
+        mx = rgb.max(-1)
+        return lum, (mx - rgb.min(-1)) / np.maximum(mx, 1)
+
+    out = out.copy()
+    H, W = out.shape[:2]
+    touched = cv2.dilate(m_en.astype(np.uint8), np.ones((11, 11), np.uint8)) > 0
+    touched[30:140, 790:1000] = False  # 낙관
+    lum, sat = stats(out)
+    a = out[..., 3]
+    wave = np.zeros((H, W), bool)
+    wave[222:] = True
+    wave_color = np.median(out[wave & (lum >= 165) & (a > 200) & (sat > 0.05)][:, :3], axis=0).astype(np.uint8)
+    bad = ((lum < 120) | ((sat < 0.11) & (lum < 175))) & (a > 8) & touched & wave
+    bad = cv2.dilate(bad.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
+    bad &= wave & touched
+    a3 = np.ascontiguousarray(np.dstack([a] * 3))
+    d = np.zeros_like(a3)
+    cv2.xphoto.inpaint(a3, (~bad).astype(np.uint8) * 255, d, cv2.xphoto.INPAINT_FSR_FAST)
+    out[bad, 3] = d[bad, 0]
+    out[bad, :3] = wave_color
+    for _ in range(3):
+        lum, sat = stats(out)
+        fb = (lum < 150) & (sat < 0.2) & (out[..., 3] > 8) & touched
+        fb[222:] = False
+        if not fb.any():
+            break
+        out = _fsr(out, cv2.dilate(fb.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0)
     return out
 
 
@@ -371,19 +413,7 @@ def _clean_logo():
     unknown[ys[ok], xs_[ok]] = False
 
     out = _fsr(out, unknown)
-    for _ in range(3):  # 남은 먹 점 정리 (낙관 제외)
-        spots = _mask(out, "ink", 140)
-        rgb = out[..., :3].astype(np.float32)
-        lum = rgb @ np.array([0.299, 0.587, 0.114], np.float32)
-        mx = rgb.max(-1)
-        wave_dark = (lum < 115) & ((mx - rgb.min(-1)) / np.maximum(mx, 1) < 0.5) & (out[..., 3] > 40)
-        wave_dark[:230] = False  # 물결 영역의 어두운 얼룩 (물결 색은 훨씬 밝다)
-        spots |= wave_dark
-        spots[30:140, 790:1000] = False
-        if not spots.any():
-            break
-        out = _fsr(out, cv2.dilate(spots.astype(np.uint8), np.ones((7, 7), np.uint8)) > 0)
-    return Image.fromarray(out)
+    return Image.fromarray(_scrub_logo(out, m_en))
 
 
 def _korean_logo():
