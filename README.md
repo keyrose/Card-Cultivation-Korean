@@ -5,11 +5,15 @@ Steam 게임 **Card Cultivation (修仙卡牌, App 2963600)** 비공식 한국�
 게임 내 **설정 → Language → `한국어`** 를 선택하면 한국어로 표시된다.
 (영어 열을 한국어로 교체하는 방식이라, 패치 후에는 영어 대신 한국어가 나온다.)
 
+![타이틀](docs/screenshot_title.jpg)
 ![게임 화면](docs/screenshot_intro.jpg)
 
 ## 진행 현황
 - 텍스트 14,517개 항목 전부 번역 (중국어 원문 기준, 영어 참고)
-- 이미지 속 글자(타이틀 로고, 버튼 그림 등 `Localization/English.dat` 56개)는 미번역 — 영어로 표시됨
+- 이미지 속 글자 약 260개 한글화: 타이틀 로고, 메뉴/버튼, 본문 아이콘(품질·오행), 카드 배지(경지·품질),
+  이펙트 글자, 튜토리얼 카드/설명 이미지 (`tools/image_specs*.py`)
+  - 언어별 이미지는 간체 중국어 원본으로 만든 한국어 이미지를 4개 언어 번들 모두에 넣는다
+  - 미처리: 책 표지·아이템 아이콘 속 아주 작은 장식용 글씨
 
 ## 구조
 ```
@@ -21,6 +25,9 @@ tools/
   merge.py       translation/raw/*.json 검증(태그/자리표시자) → translation/ko.json
   build_font.py  게임 폴백 폰트(FZLiBian)에 Noto Serif KR 한글 글리프 병합
   build.py       번역·폰트를 적용한 게임 파일을 build/ 에 생성
+  imgedit.py     이미지 속 글자 지우기(마스크+인페인트) 및 한국어 다시 그리기
+  image_specs*.py 이미지별 한글화 사양 (preview_images.py 로 전/후 비교)
+  fonts/         East Sea Dokdo, Song Myung (SIL OFL)
   install.py     build/ 를 게임 폴더에 설치 (원본은 backup/), `restore` 로 복구
 source/textmapper.json   원문 (key, zh, zht, en, ru)
 translation/STYLE.md     번역 지침·핵심 용어집
@@ -37,7 +44,7 @@ translation/ko.json      최종 번역 (키 → 한국어, merge.py 가 생성)
   그래서 그 TTF(`resources.assets`, `Entities/Timer.dat` 안의 Font)에 한글 글리프를 병합한다.
 
 ## 빌드 & 설치
-필요: Python 3, `pip install UnityPy fonttools`, Windows 기본 글꼴 `NotoSerifKR-VF.ttf`.
+필요: Python 3, `pip install UnityPy fonttools opencv-python-headless`, Windows 기본 글꼴 `NotoSerifKR-VF.ttf`.
 게임은 종료한 상태에서:
 ```bash
 cd tools
