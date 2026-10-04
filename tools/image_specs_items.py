@@ -643,8 +643,10 @@ GLOW = {"white": ((248, 244, 230), (255, 250, 230, 230)),
         "red": ((240, 20, 20), (255, 0, 0, 230))}
 
 
-def _ui_faint(text, box=(92, 64, 182, 252), th=148):
-    """UI 액자 속 흐릿한 이름: 종이보다 어두운 획(테두리 닿는 덩어리 제외)을 지우고 같은 자리에 쓴다"""
+def _ui_faint(text, box=(92, 64, 182, 252), th=148, everything=False):
+    """UI 액자 속 흐릿한 이름: 종이보다 어두운 획(테두리 닿는 덩어리 제외)을 지우고 같은 자리에 쓴다
+
+    everything=True 면 모양 필터 없이 영역 안의 어두운 획을 모두 지운다 (X 표시를 다시 그리는 경우)"""
     def f(img):
         arr = np.array(img.convert("RGBA"))
         x0, y0, x1, y1 = box
@@ -655,7 +657,11 @@ def _ui_faint(text, box=(92, 64, 182, 252), th=148):
         h, w = sub.shape
         for i in range(1, n):
             bx, by, bw, bh, ar = st[i]
-            if ar < 12 or bx == 0 or by == 0 or bx + bw >= w or by + bh >= h or max(bw, bh) > 8 * min(bw, bh):
+            if ar < 12:
+                continue
+            if not everything and (bx == 0 or by == 0 or bx + bw >= w or by + bh >= h):
+                continue
+            if not everything and max(bw, bh) > 8 * min(bw, bh):
                 continue
             keep |= cc == i
         if not keep.any():
@@ -677,7 +683,7 @@ def faint(text):  # 흐릿한 인물/이름 글씨 (ArtData: 투명 배경 / UI:
 
 def realm(big, small=None):  # 경지 표시: 흰 글자+검은 테두리 (대각선) + 아래 검은 '초기/중기/후기'
     out = [comp_text(big, pick="outlined", layout="diag", fill=(255, 255, 255), stroke=(0, 0, 0),
-                     stroke_w=0.09, scale=1.0)]
+                     stroke_w=0.09, scale=1.0, dilate=4)]
     if small:
         out.insert(0, comp_text(small, box=(0, 225, 300, 326), pick="dark", fill=(10, 10, 10), bold=0.04, font="callig", scale=0.9))
     return chain(*out)
@@ -736,7 +742,8 @@ TEXTS = {
     "30803": faint("창효"),
     "30804": faint("구신"),
     # 경지
-    "5000": comp_text("수사", pick="outlined", layout="diag", fill=(255, 255, 255), stroke=(0, 0, 0), stroke_w=0.09),
+    "5000": comp_text("수사", pick="outlined", layout="diag", fill=(255, 255, 255), stroke=(0, 0, 0), stroke_w=0.09,
+                      dilate=4),
     "5001": realm("연기", "중기"), "5002": realm("연기", "후기"),
     "5003": realm("축기", "초기"), "5004": realm("축기", "중기"), "5005": realm("축기", "후기"),
     "5006": realm("결단", "초기"), "5007": realm("결단", "후기"),
@@ -864,7 +871,7 @@ def crossed(text, lines, col=(70, 62, 45, 210), width=4):
     def f(img):
         from image_specs import apply
         if framed(img):
-            img = _ui_faint(text)(img)
+            img = _ui_faint(text, everything=True)(img)
             return draw(img, framed_tf)
         img = apply(img, brush(text, fill=None, layout="v", font="callig", bold=0.02))
         return draw(img, ident)

@@ -75,6 +75,9 @@ def _font(name, size):
     return f
 
 
+SOLID_FONTS = {"brush"}  # 마른 붓 틈을 메워 그릴 폰트
+
+
 def _render(text, font, size, layout, fill, stroke, sw):
     """글자를 투명 캔버스에 그려 잘라낸 이미지를 돌려준다."""
     f = _font(font, size)
@@ -96,13 +99,41 @@ def _render(text, font, size, layout, fill, stroke, sw):
     gap = int(size * (0.02 if layout == "v" else 0.08))
     W = max(lw) + pad * 2
     H = sum(lh) + gap * (len(lines) - 1) + pad * 2
+    def draw(color, width):
+        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        dd = ImageDraw.Draw(layer)
+        y = pad
+        for l, b, w, h in zip(lines, boxes, lw, lh):
+            dd.text(((W - w) / 2 - b[0], y - b[1]), l, font=f, fill=color,
+                    stroke_width=width, stroke_fill=color)
+            y += h + gap
+        return layer
+
+    if font not in SOLID_FONTS:
+        im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        y = pad
+        for l, b, w, h in zip(lines, boxes, lw, lh):
+            d.text(((W - w) / 2 - b[0], y - b[1]), l, font=f, fill=fill,
+                   stroke_width=sw, stroke_fill=stroke)
+            y += h + gap
+        return im.crop(im.getbbox())
+    # 붓글씨 폰트의 마른 붓 틈(구멍)을 메워 단색 글자로: 외곽선/채움 층을 따로 그려 닫힘 연산
+    k = max(3, int(size * 0.06) | 1)
+    kern = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    y = pad
-    for l, b, w, h in zip(lines, boxes, lw, lh):
-        d.text(((W - w) / 2 - b[0], y - b[1]), l, font=f, fill=fill,
-               stroke_width=sw, stroke_fill=stroke)
-        y += h + gap
+    for color, width in ([(stroke, sw)] if stroke is not None and sw else []) + [(fill, 0)]:
+        layer = draw(tuple(color[:3]) + (255,), width)
+        a = cv2.morphologyEx(np.array(layer.getchannel("A")), cv2.MORPH_CLOSE, kern)
+        if width:  # 외곽선 층: 바깥과 이어지지 않은 구멍은 모두 메움
+            hole = (a < 128).astype(np.uint8)
+            n, cc = cv2.connectedComponents(hole, connectivity=4)
+            border = set(np.unique(np.concatenate([cc[0], cc[-1], cc[:, 0], cc[:, -1]])))
+            for i in range(1, n):
+                if i not in border:
+                    a[cc == i] = 255
+        layer.putalpha(Image.fromarray(a).point(lambda v, m=color[3] if len(color) > 3 else 255: v * m // 255))
+        im.alpha_composite(layer)
     return im.crop(im.getbbox())
 
 
