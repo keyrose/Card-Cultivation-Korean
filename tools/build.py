@@ -59,7 +59,7 @@ def set_script(obj, data: bytes):
 def write_dat(rel, env, key):
     out = BUILD_DIR / rel
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_bytes(xor(env.file.save(), key))
+    out.write_bytes(xor(env.file.save(packer="lz4"), key))
     print("  →", out)
 
 
@@ -99,7 +99,13 @@ TEXTICON_BUNDLES = ["UI/UIForms.dat", "Entities/Timer.dat", "Entities/Effect.dat
 FONT_BUNDLES = ["Entities/Timer.dat"]
 
 
+RECORD = None   # release.py 가 {번들: {텍스처 이름: Image}} 로 설정하면 바꾼 이미지를 모아 둔다
+CURRENT = None  # 지금 처리 중인 번들
+
+
 def set_texture(tex, img):
+    if RECORD is not None:
+        RECORD.setdefault(CURRENT, {})[tex.m_Name] = img
     fmt = tex.m_TextureFormat
     try:
         tex.set_image(img, target_format=fmt, mipmap_count=max(1, tex.m_MipCount or 1))
@@ -181,8 +187,10 @@ def main():
     bundles = set(FONT_BUNDLES)
     if not skip_images:
         bundles |= set(LANG_BUNDLES) | set(TEXTICON_BUNDLES) | set(image_specs.BY_BUNDLE)
+    global CURRENT
     for b in sorted(bundles):
         rel = "StreamingAssets/" + b
+        CURRENT = b
         print(b)
         data, key = read_dat(original(rel))
         env = UnityPy.load(data)
@@ -194,6 +202,7 @@ def main():
             print(f"  이미지 {n}개")
         write_dat(rel, env, key)
     print("resources.assets")
+    CURRENT = "resources.assets"
     src = original("resources.assets")
     ress = src.with_name("resources.assets.resS")
     if not ress.exists():  # 백업본 옆에도 리소스 스트림 파일이 있어야 읽힌다 (수정하지 않는 파일)

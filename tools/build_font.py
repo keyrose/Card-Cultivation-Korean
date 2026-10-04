@@ -27,9 +27,9 @@ def _ref_box(font, ch):
     return bp.bounds
 
 
-def merge(base_bytes: bytes) -> bytes:
+def merge(base_bytes: bytes, kr_font: str = KR_FONT) -> bytes:
     base = TTFont(io.BytesIO(base_bytes))
-    kr = TTFont(KR_FONT)
+    kr = TTFont(kr_font)
     if "fvar" in kr:
         kr = instantiateVariableFont(kr, {"wght": KR_FONT_WEIGHT})
 

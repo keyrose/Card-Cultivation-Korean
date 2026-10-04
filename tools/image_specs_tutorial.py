@@ -16,8 +16,8 @@ FONT_DIR = Path(__file__).parent / "fonts"
 FONT_FILES = {
     "brush": str(FONT_DIR / "EastSeaDokdo-Regular.ttf"),
     "callig": str(FONT_DIR / "SongMyung-Regular.ttf"),
-    "serif": r"C:\Windows\Fonts\NotoSerifKR-VF.ttf",
-    "sans": r"C:\Windows\Fonts\NotoSansKR-VF.ttf",
+    "serif": str(Path(__file__).parent / "fonts" / "NotoSerifKR-VF.ttf"),
+    "sans": str(Path(__file__).parent / "fonts" / "NotoSansKR-VF.ttf"),
 }
 
 TAN = (109, 95, 65, 255)      # 안내문 본문 색

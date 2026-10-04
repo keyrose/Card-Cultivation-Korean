@@ -28,7 +28,7 @@ FONT_DIR = Path(__file__).parent / "fonts"
 FONTS = {
     "brush": str(FONT_DIR / "EastSeaDokdo-Regular.ttf"),
     "callig": str(FONT_DIR / "SongMyung-Regular.ttf"),
-    "serif": r"C:\Windows\Fonts\NotoSerifKR-VF.ttf",
+    "serif": str(FONT_DIR / "NotoSerifKR-VF.ttf"),
 }
 
 

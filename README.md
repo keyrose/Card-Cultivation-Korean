@@ -27,7 +27,9 @@ tools/
   build.py       번역·폰트를 적용한 게임 파일을 build/ 에 생성
   imgedit.py     이미지 속 글자 지우기(마스크+인페인트) 및 한국어 다시 그리기
   image_specs*.py 이미지별 한글화 사양 (preview_images.py 로 전/후 비교)
-  fonts/         East Sea Dokdo, Song Myung (SIL OFL)
+  fonts/         Noto Serif/Sans KR, East Sea Dokdo, Song Myung (SIL OFL)
+  installer.py   배포용 설치 프로그램 (exe 로 묶임)
+  release.py     릴리스 zip 생성
   install.py     build/ 를 게임 폴더에 설치 (원본은 backup/), `restore` 로 복구
 source/textmapper.json   원문 (key, zh, zht, en, ru)
 translation/STYLE.md     번역 지침·핵심 용어집
@@ -43,8 +45,16 @@ translation/ko.json      최종 번역 (키 → 한국어, merge.py 가 생성)
   `FangZhengLiBian_GBK_0_SDF_Fallback` 이 원본 TTF에서 런타임 생성한다.
   그래서 그 TTF(`resources.assets`, `Entities/Timer.dat` 안의 Font)에 한글 글리프를 병합한다.
 
-## 빌드 & 설치
-필요: Python 3, `pip install UnityPy fonttools opencv-python-headless`, Windows 기본 글꼴 `NotoSerifKR-VF.ttf`.
+## 사용자용 설치 (릴리스)
+GitHub Releases 의 `CardCultivation_KoreanPatch_vX.Y.Z.zip` 을 받아 exe 실행 → 1번(설치).
+게임 폴더를 자동으로 찾고, 원본은 게임 폴더 `KoreanPatch_backup/` 에 보관한다. 2번으로 복구.
+게임 원본 파일은 배포하지 않고, 사용자 PC의 파일에 번역·글꼴·이미지를 직접 적용한다.
+
+릴리스 만들기: `cd tools && python release.py 1.0.0` → `dist/CardCultivation_KoreanPatch_v1.0.0.zip`
+(PyInstaller 필요: `pip install pyinstaller`)
+
+## 빌드 & 설치 (개발용)
+필요: Python 3, `pip install UnityPy fonttools opencv-python-headless`.
 게임은 종료한 상태에서:
 ```bash
 cd tools

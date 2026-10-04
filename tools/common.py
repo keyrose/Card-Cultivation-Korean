@@ -13,7 +13,7 @@ BUILD_DIR = ROOT / "build"       # 빌드 결과 (git 제외)
 SOURCE_DIR = ROOT / "source"     # 추출한 원문
 TRANS_DIR = ROOT / "translation"  # 한국어 번역
 
-KR_FONT = r"C:\Windows\Fonts\NotoSerifKR-VF.ttf"
+KR_FONT = str(ROOT / "tools" / "fonts" / "NotoSerifKR-VF.ttf")  # SIL OFL
 KR_FONT_WEIGHT = 500
 
 # 한국어로 교체할 언어 열 (tbtextmapper: key, zh-Hans, zh-Hant, en, ru)

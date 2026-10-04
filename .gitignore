@@ -4,3 +4,4 @@ build/
 work/
 __pycache__/
 *.pyc
+dist/
