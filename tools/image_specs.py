@@ -255,6 +255,19 @@ try:
 except Exception:  # 작업 중인 모듈은 건너뜀
     pass
 
+# 아이템/스킬/무기 아이콘: UI 와 카드 그림 번들에 같은 이름·같은 그림이 있어 둘 다 적용
+for _mod, _var, _bundles in [
+    ("image_specs_items", "ITEMS", ["UI/UISprites/Items.dat", "ArtData/Items.dat"]),
+    ("image_specs_skills", "SKILLS", ["UI/UISprites/Skill.dat", "ArtData/Skill.dat"]),
+    ("image_specs_skills", "WEAPONS", ["UI/UISprites/Weapon.dat", "ArtData/Weapon.dat"]),
+]:
+    try:
+        _specs = getattr(__import__(_mod), _var)
+        for _b in _bundles:
+            BY_BUNDLE.setdefault(_b, {}).update(_specs)
+    except Exception:  # 작업 중인 모듈은 건너뜀
+        pass
+
 
 def apply(img, sp):
     """spec / spec 리스트 / 함수 를 이미지에 적용"""
