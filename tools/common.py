@@ -21,12 +21,6 @@ LANG_COLUMNS = ["ChineseSimplified", "ChineseTraditional", "English", "Russian"]
 TARGET_LANG = "English"
 KOREAN_LABEL = "한국어"
 
-# 패치가 수정하는 게임 파일 (DATA_DIR 기준 상대경로)
-PATCHED_FILES = [
-    "StreamingAssets/LubanTables.dat",
-    "StreamingAssets/Entities/Timer.dat",
-    "resources.assets",
-]
 
 MAGIC = b"UnityFS\0"
 
