@@ -7,6 +7,13 @@ from collections import Counter, defaultdict
 from common import SOURCE_DIR, TRANS_DIR
 
 TAG = re.compile(r"<[^>]+>|\{[^}]*\}")
+LINE_INDENT = re.compile(r"</?line-indent(=[^>]*)?>")
+
+
+def localize_indent(ko):
+    """원문의 '첫 줄 두 글자 들여쓰기'(<line-indent=20%> 등)는 한국어 대사에서 띄어쓰기가 어긋난 것처럼
+    보이므로 들여쓰기 태그를 모두 없앤다."""
+    return LINE_INDENT.sub("", ko)
 
 
 def check(zh, ko):
@@ -43,7 +50,7 @@ def main():
                 problems.append(f"{p.name} {k}: {'; '.join(errs)}")
                 if any("태그" in e for e in errs):
                     continue  # 태그가 깨진 번역은 적용하지 않음 (게임 표시 오류 방지)
-            by_zh[zh_of[k]] = v
+            by_zh[zh_of[k]] = localize_indent(v)
 
     ko = {}
     for zh, v in by_zh.items():
