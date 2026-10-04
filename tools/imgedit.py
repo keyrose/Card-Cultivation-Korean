@@ -15,6 +15,7 @@ relabel(img, spec) 의 spec 키
   inset    box 안쪽 여백
   bg       지운 자리를 인페인트 대신 이 색으로 채움
   glow     (반경, (r,g,b,a)) 글자 주위 번지는 빛
+  stretch_y 글자를 세로로 늘이는 배율
   bold     외곽선이 없을 때 같은 색 외곽선으로 굵게 (글자 크기 대비 비율)
 """
 from pathlib import Path
@@ -180,8 +181,11 @@ def relabel(img: Image.Image, spec: dict) -> Image.Image:
             stroke, sw_ratio = fill, spec["bold"]
         if stroke is not None:
             stroke = tuple(stroke) + ((255,) if len(stroke) == 3 else ())
-        t = fit_text(spec["text"], spec.get("font", "brush"), bw, bh, spec.get("layout", "h"),
+        sy = spec.get("stretch_y", 1.0)  # 세로로 늘이기 (가늘고 긴 붓글씨 흉내)
+        t = fit_text(spec["text"], spec.get("font", "brush"), bw, bh / sy, spec.get("layout", "h"),
                      fill, stroke, sw_ratio, spec.get("scale", 1.0))
+        if sy != 1.0:
+            t = t.resize((t.width, int(t.height * sy)), Image.LANCZOS)
         cx, cy = (tb[0] + tb[2]) / 2 + spec.get("dx", 0), (tb[1] + tb[3]) / 2 + spec.get("dy", 0)
         px, py = int(cx - t.width / 2), int(cy - t.height / 2)
         px, py = max(0, min(W - t.width, px)), max(0, min(H - t.height, py))

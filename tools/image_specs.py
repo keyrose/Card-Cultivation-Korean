@@ -264,3 +264,31 @@ def apply(img, sp):
     for s in (sp if isinstance(sp, list) else [sp]):
         img = relabel(img, s)
     return img
+
+
+# ---- 타이틀 로고 (卡牌修仙 + 傳 낙관) → 카드수선 + 전
+LOGO_SPECS = [
+    {"text": "카드수선", "font": "brush", "mask": "dark", "thresh": 70, "box": (40, 0, 915, 376),
+     "text_box": (60, 20, 912, 360), "fill": (18, 18, 18), "dilate": 3, "bold": 0.025,
+     "stretch_y": 1.45},
+    {"text": "전", "font": "callig", "mask": "light", "thresh": 140, "box": (925, 55, 1005, 235),
+     "fill": (240, 228, 205), "dilate": 2, "scale": 0.9},
+]
+
+
+def logo(img):
+    """원본 로고(1030x376)와 비율이 같은 영역에 그려진 로고도 처리 (play01 의 작은 로고)"""
+    from PIL import Image
+    bb = img.getchannel("A").point(lambda v: 255 if v > 20 else 0).getbbox()
+    if img.size == (1030, 376):
+        bb = (0, 0, 1030, 376)
+    crop = img.crop(bb).resize((1030, 376), Image.LANCZOS)
+    new = apply(crop, LOGO_SPECS).resize((bb[2] - bb[0], bb[3] - bb[1]), Image.LANCZOS)
+    out = img.copy()
+    out.paste(Image.new("RGBA", new.size, (0, 0, 0, 0)), bb[:2])
+    out.alpha_composite(new, bb[:2])
+    return out
+
+
+LOCALIZATION["logo"] = logo
+LOCALIZATION["play01"] = logo
