@@ -279,29 +279,93 @@ def apply(img, sp):
     return img
 
 
-# ---- 타이틀 로고 (卡牌修仙 + 傳 낙관) → 카드수선 + 전
+# ---- 타이틀 로고: 영어판 로고(카드 부채 + 두 줄 붓글씨 + 붉은 낙관) 구성을 따른다
+#   Card / Cultivation / Biography → 카드 / 수선 / 전
 LOGO_SPECS = [
-    {"text": "카드수선", "font": "brush", "mask": "ink", "thresh": 135, "box": (40, 0, 930, 376),
-     "text_box": (60, 20, 912, 360), "fill": (18, 18, 18), "dilate": 6, "bold": 0.008,
-     "stretch_y": 1.45},
-    {"text": "전", "font": "callig", "mask": "light", "thresh": 140, "box": (925, 55, 1005, 235),
-     "fill": (240, 228, 205), "dilate": 2, "scale": 0.9},
+    {"text": "카드", "font": "brush", "mask": "none", "text_box": (330, 92, 740, 238),
+     "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05},
+    {"text": "수선", "font": "brush", "mask": "none", "text_box": (250, 218, 820, 372),
+     "fill": (22, 22, 22), "bold": 0.012, "stretch_y": 1.05},
+    # 붉은 낙관 속 흰 글자 Biography → 전
+    {"text": "전", "font": "brush", "mask": "light", "thresh": 150, "box": (805, 55, 985, 120),
+     "fill": (248, 244, 236), "dilate": 2, "scale": 0.95},
 ]
+_EN_LOGO = {}
+
+
+def _english(name):
+    """영어 번들의 같은 이름 이미지 (빌드는 간체 이미지를 넘겨주므로 여기서 직접 읽는다)"""
+    if name not in _EN_LOGO:
+        import UnityPy
+        from common import original, read_dat
+        env = UnityPy.load(read_dat(original("StreamingAssets/Localization/English.dat"))[0])
+        for o in env.objects:
+            if o.type.name == "Texture2D" and o.peek_name() in ("logo", "play01"):
+                _EN_LOGO[o.peek_name()] = o.read().image.convert("RGBA")
+    return _EN_LOGO[name].copy()
+
+
+def _clean_logo():
+    """영어 로고에서 글자를 지운 배경: 같은 배경 그림을 쓰는 중국어 로고의 픽셀로 메우고,
+    두 로고 모두 글자가 있던 곳만 인페인트한다"""
+    import cv2
+    import numpy as np
+    from PIL import Image
+    import UnityPy
+    from common import original, read_dat
+    from imgedit import _mask
+    env = UnityPy.load(read_dat(original("StreamingAssets/Localization/ChineseSimplified.dat"))[0])
+    zh = next(o.read().image.convert("RGBA") for o in env.objects
+              if o.type.name == "Texture2D" and o.peek_name() == "logo")
+    en = np.array(_english("logo"))
+    zh = np.array(zh)
+    k = np.ones((9, 9), np.uint8)
+    m_en = cv2.dilate(_mask(en, "ink", 150).astype(np.uint8), k) > 0
+    m_zh = cv2.dilate((_mask(zh, "ink", 150) | _mask(zh, "dark", 100)).astype(np.uint8), k) > 0
+    m_zh[:, 900:] = False  # 중국어 로고의 傳 낙관 자리는 영어 배경을 그대로 쓴다
+    m_en[40:130, 800:990] = False  # 영어 낙관(Biography)은 아래 spec 에서 따로 처리
+    out = en.copy()
+    take = m_en & ~m_zh
+    out[take] = zh[take]
+    both = (m_en & m_zh).astype(np.uint8) * 255
+    out[..., :3] = cv2.inpaint(np.ascontiguousarray(out[..., :3]), both, 5, cv2.INPAINT_TELEA)
+    out[..., 3] = cv2.inpaint(np.ascontiguousarray(out[..., 3]), both, 5, cv2.INPAINT_TELEA)
+    # 마지막 정리: 남은 먹 점 (낙관 제외)
+    rest = _mask(out, "ink", 140)
+    rest[30:140, 790:1000] = False
+    rest = cv2.dilate(rest.astype(np.uint8) * 255, np.ones((7, 7), np.uint8))
+    if rest.any():
+        out[..., :3] = cv2.inpaint(np.ascontiguousarray(out[..., :3]), rest, 5, cv2.INPAINT_TELEA)
+    return Image.fromarray(out)
+
+
+def _korean_logo():
+    if "ko" not in _EN_LOGO:
+        _EN_LOGO["ko"] = apply(_clean_logo(), LOGO_SPECS)
+    return _EN_LOGO["ko"].copy()
 
 
 def logo(img):
-    """원본 로고(1030x376)와 비율이 같은 영역에 그려진 로고도 처리 (play01 의 작은 로고)"""
+    return _korean_logo()
+
+
+def logo_small(img):
+    """시작 화면 작은 로고(play01): 영어판 그림에서 로고 부분만 한국어 로고로 교체"""
     from PIL import Image
-    bb = img.getchannel("A").point(lambda v: 255 if v > 20 else 0).getbbox()
-    if img.size == (1030, 376):
-        bb = (0, 0, 1030, 376)
-    crop = img.crop(bb).resize((1030, 376), Image.LANCZOS)
-    new = apply(crop, LOGO_SPECS).resize((bb[2] - bb[0], bb[3] - bb[1]), Image.LANCZOS)
-    out = img.copy()
-    out.paste(Image.new("RGBA", new.size, (0, 0, 0, 0)), bb[:2])
-    out.alpha_composite(new, bb[:2])
+    base = _english("play01")
+    big = _english("logo")
+    a = base.getchannel("A").point(lambda v: 255 if v > 20 else 0)
+    bb = a.getbbox()
+    # play01 은 logo 를 축소해 넣은 것: 같은 비율 영역에 한국어 로고를 다시 넣는다
+    w = bb[2] - bb[0]
+    h = round(w * big.height / big.width)
+    y0 = bb[1] + ((bb[3] - bb[1]) - h) // 2
+    ko = _korean_logo().resize((w, h), Image.LANCZOS)
+    out = base.copy()
+    out.paste(Image.new("RGBA", (w, h), (0, 0, 0, 0)), (bb[0], y0))
+    out.alpha_composite(ko, (bb[0], y0))
     return out
 
 
 LOCALIZATION["logo"] = logo
-LOCALIZATION["play01"] = logo
+LOCALIZATION["play01"] = logo_small
