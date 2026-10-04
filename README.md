@@ -63,7 +63,7 @@ GitHub Releases 의 `CardCultivation_KoreanPatch_vX.Y.Z.zip` 을 받아 exe 실�
 (PyInstaller 필요: `pip install pyinstaller`)
 
 ## 빌드 & 설치 (개발용)
-필요: Python 3, `pip install UnityPy fonttools opencv-python-headless`.
+필요: Python 3, `pip install UnityPy fonttools opencv-contrib-python-headless`.
 게임은 종료한 상태에서:
 ```bash
 cd tools

@@ -306,9 +306,29 @@ def _english(name):
     return _EN_LOGO[name].copy()
 
 
+def _fsr(arr, unknown):
+    """구조를 이어 그리는 인페인트(FSR). unknown=True 인 곳을 채운다 (RGB, 알파 각각)"""
+    import cv2
+    import numpy as np
+    mask = (~unknown).astype(np.uint8) * 255
+    out = arr.copy()
+    d = np.zeros_like(arr[..., :3])
+    cv2.xphoto.inpaint(np.ascontiguousarray(arr[..., :3]), mask, d, cv2.xphoto.INPAINT_FSR_FAST)
+    out[..., :3] = d
+    a3 = np.ascontiguousarray(np.dstack([arr[..., 3]] * 3))
+    d = np.zeros_like(a3)
+    cv2.xphoto.inpaint(a3, mask, d, cv2.xphoto.INPAINT_FSR_FAST)
+    out[..., 3] = d[..., 0]
+    return out
+
+
 def _clean_logo():
-    """영어 로고에서 글자를 지운 배경: 같은 배경 그림을 쓰는 중국어 로고의 픽셀로 메우고,
-    두 로고 모두 글자가 있던 곳만 인페인트한다"""
+    """영어 로고에서 글자를 지운 배경을 추측해 복원한다.
+
+    1. 같은 배경 그림을 쓰는 중국어 로고에서 글자가 없는 픽셀을 가져온다
+    2. 두 로고 모두 글자가 있던 곳: 카드 부채는 좌우 대칭이라 반대편 픽셀로 채운다
+    3. 나머지(물결 등)는 구조를 이어 그리는 FSR 인페인트, 남은 먹 점도 같은 방법으로 정리
+    """
     import cv2
     import numpy as np
     from PIL import Image
@@ -316,27 +336,53 @@ def _clean_logo():
     from common import original, read_dat
     from imgedit import _mask
     env = UnityPy.load(read_dat(original("StreamingAssets/Localization/ChineseSimplified.dat"))[0])
-    zh = next(o.read().image.convert("RGBA") for o in env.objects
-              if o.type.name == "Texture2D" and o.peek_name() == "logo")
+    zh = np.array(next(o.read().image.convert("RGBA") for o in env.objects
+                       if o.type.name == "Texture2D" and o.peek_name() == "logo"))
     en = np.array(_english("logo"))
-    zh = np.array(zh)
-    k = np.ones((9, 9), np.uint8)
-    m_en = cv2.dilate(_mask(en, "ink", 150).astype(np.uint8), k) > 0
-    m_zh = cv2.dilate((_mask(zh, "ink", 150) | _mask(zh, "dark", 100)).astype(np.uint8), k) > 0
+    H, W = en.shape[:2]
+    k = np.ones((7, 7), np.uint8)
+    m_en = cv2.dilate(_mask(en, "ink", 160).astype(np.uint8), k) > 0
+    m_zh = cv2.dilate(_mask(zh, "ink", 160).astype(np.uint8), k) > 0
     m_zh[:, 900:] = False  # 중국어 로고의 傳 낙관 자리는 영어 배경을 그대로 쓴다
-    m_en[40:130, 800:990] = False  # 영어 낙관(Biography)은 아래 spec 에서 따로 처리
+    m_en[40:130, 800:990] = False  # 영어 낙관(Biography)은 spec 에서 따로 처리
     out = en.copy()
     take = m_en & ~m_zh
     out[take] = zh[take]
-    both = (m_en & m_zh).astype(np.uint8) * 255
-    out[..., :3] = cv2.inpaint(np.ascontiguousarray(out[..., :3]), both, 5, cv2.INPAINT_TELEA)
-    out[..., 3] = cv2.inpaint(np.ascontiguousarray(out[..., 3]), both, 5, cv2.INPAINT_TELEA)
-    # 마지막 정리: 남은 먹 점 (낙관 제외)
-    rest = _mask(out, "ink", 140)
-    rest[30:140, 790:1000] = False
-    rest = cv2.dilate(rest.astype(np.uint8) * 255, np.ones((7, 7), np.uint8))
-    if rest.any():
-        out[..., :3] = cv2.inpaint(np.ascontiguousarray(out[..., :3]), rest, 5, cv2.INPAINT_TELEA)
+    unknown = m_en & m_zh
+
+    # 부채 대칭축: 위쪽 띠의 알파가 좌우로 가장 잘 맞는 위치
+    band = out[:110, :, 3].astype(np.float32)
+    xs = np.arange(W)
+    best = None
+    for c2 in range(1000, 1160):
+        xm = c2 - xs
+        ok = (xm >= 0) & (xm < W)
+        d = np.abs(band[:, ok] - band[:, xm[ok]]).mean()
+        if best is None or d < best[0]:
+            best = (d, c2)
+    c2 = best[1]
+    fan = np.zeros_like(unknown)
+    fan[:235, 250:830] = True
+    ys, xs_ = np.nonzero(unknown & fan)
+    xm = c2 - xs_
+    ok = (xm >= 0) & (xm < W)
+    ok[ok] &= ~unknown[ys[ok], xm[ok]]
+    out[ys[ok], xs_[ok]] = out[ys[ok], xm[ok]]
+    unknown[ys[ok], xs_[ok]] = False
+
+    out = _fsr(out, unknown)
+    for _ in range(3):  # 남은 먹 점 정리 (낙관 제외)
+        spots = _mask(out, "ink", 140)
+        rgb = out[..., :3].astype(np.float32)
+        lum = rgb @ np.array([0.299, 0.587, 0.114], np.float32)
+        mx = rgb.max(-1)
+        wave_dark = (lum < 115) & ((mx - rgb.min(-1)) / np.maximum(mx, 1) < 0.5) & (out[..., 3] > 40)
+        wave_dark[:230] = False  # 물결 영역의 어두운 얼룩 (물결 색은 훨씬 밝다)
+        spots |= wave_dark
+        spots[30:140, 790:1000] = False
+        if not spots.any():
+            break
+        out = _fsr(out, cv2.dilate(spots.astype(np.uint8), np.ones((7, 7), np.uint8)) > 0)
     return Image.fromarray(out)
 
 

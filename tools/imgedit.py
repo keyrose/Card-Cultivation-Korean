@@ -44,7 +44,7 @@ def _mask(arr, mode, thresh):
     if mode == "dark":
         return vis & (lum < (thresh or 80))
     if mode == "ink":  # 먹색: 어둡고 채도 낮은 픽셀 (색 있는 배경 그림은 남김)
-        return vis & (lum < (thresh or 120)) & (sat < 0.3)
+        return vis & (lum < (thresh or 120)) & ((sat < 0.3) | (mx < 40))  # 아주 검은 픽셀은 채도 계산이 불안정
     if mode == "sat":
         return vis & (sat > (thresh or 0.35)) & (mx > 60)
     if mode == "alpha":
