@@ -13,6 +13,7 @@ from common import (BUILD_DIR, DATA_DIR, KOREAN_LABEL, LANG_COLUMNS, SOURCE_DIR,
                     TRANS_DIR, original, read_dat, xor)
 from extract import parse_textmapper, script_bytes
 from luban import Reader, w_str, w_uint
+from ui_fix import SPRITE_ASSET_FIXES, fix_sprite_assets
 
 COL = {"ChineseSimplified": "zh", "ChineseTraditional": "zht", "English": "en", "Russian": "ru"}[TARGET_LANG]
 FONT_NAME = "FangZhengLiBian_GBK_0"
@@ -184,7 +185,7 @@ def main():
     skip_images = "--no-images" in sys.argv
     ko_loc = None if skip_images else korean_localized_images()
     boxes = None if skip_images else texticon_boxes()
-    bundles = set(FONT_BUNDLES)
+    bundles = set(FONT_BUNDLES) | set(SPRITE_ASSET_FIXES)
     if not skip_images:
         bundles |= set(LANG_BUNDLES) | set(TEXTICON_BUNDLES) | set(image_specs.BY_BUNDLE)
     global CURRENT
@@ -196,6 +197,8 @@ def main():
         env = UnityPy.load(data)
         if b in FONT_BUNDLES:
             patch_fonts(env, font_cache)
+        if b in SPRITE_ASSET_FIXES:
+            print(f"  스프라이트 에셋 {fix_sprite_assets(env, SPRITE_ASSET_FIXES[b])}개 연결")
         if not skip_images:
             n = patch_textures(env, image_specs.BY_BUNDLE.get(b, {}),
                                ko_loc if b in LANG_BUNDLES else None, boxes)

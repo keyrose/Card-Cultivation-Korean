@@ -16,6 +16,7 @@ import zipfile
 
 import build
 from common import BUILD_DIR, DATA_DIR, KR_FONT, ROOT, TRANS_DIR, original
+from ui_fix import SPRITE_ASSET_FIXES
 
 DIST = ROOT / "dist"
 PAYLOAD = DIST / "payload"
@@ -55,7 +56,8 @@ def make_payload(version):
             images[rel][name] = h
 
     files = sorted({"StreamingAssets/LubanTables.dat", "resources.assets",
-                    *("StreamingAssets/" + b for b in build.FONT_BUNDLES), *images})
+                    *("StreamingAssets/" + b for b in build.FONT_BUNDLES),
+                    *("StreamingAssets/" + b for b in SPRITE_ASSET_FIXES), *images})
     manifest = {
         "version": version,
         "files": {rel: {"sha256": sha256_file(original(rel))} for rel in files},

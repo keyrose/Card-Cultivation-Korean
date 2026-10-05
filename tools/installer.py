@@ -4,6 +4,7 @@
   - 텍스트: lang_tbtextmapper 의 영어 열 → 한국어, 언어 표시명 → 한국어
   - 폰트: 게임 폴백 폰트에 한글 글리프 병합 (Noto Serif KR, SIL OFL)
   - 이미지: 한글화한 텍스처로 교체
+  - UI: 원본에서 빠진 스프라이트 에셋 연결 (아이콘 태그가 글자로 나오는 문제)
 원본은 게임 폴더의 KoreanPatch_backup/ 에 보관하고, 메뉴에서 복구할 수 있다.
 """
 import hashlib
@@ -19,6 +20,7 @@ from PIL import Image
 
 from build_font import merge
 from luban import Reader, w_str, w_uint
+from ui_fix import SPRITE_ASSET_FIXES, fix_sprite_assets
 
 APP = "Card Cultivation 한글 패치"
 GAME_EXE = "CardCultivation.exe"
@@ -193,6 +195,9 @@ class Patch:
                     set_texture(o.read(), self.image(imgs[n]))
         if rel in self.manifest["fonts"]:
             self.fonts(env)
+        fixes = SPRITE_ASSET_FIXES.get(rel.removeprefix("StreamingAssets/"))
+        if fixes:
+            fix_sprite_assets(env, fixes)
         if is_bundle:
             return xor(env.file.save(packer="lz4"), key)
         return env.file.save()
