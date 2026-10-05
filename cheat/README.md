@@ -1,0 +1,32 @@
+# Card Cultivation 치트 (BepInEx 6 IL2CPP 플러그인)
+
+게임 안에서 **F1** 으로 여는 치트 창.
+
+| 탭 | 기능 |
+|---|---|
+| 주인공 | 무적, 아군 무적, 적 즉사, 에너지 무한, 체력/에너지 회복, 최대 체력·공격·방어·최대 에너지·신혼 증가, 경지 상승, 수명 증가 |
+| 자원 | 영석/명성 카드 생성(수량 지정), 맵의 영석 더미 x10 |
+| 카드 생성 | 전체 카드 표에서 이름/ID 검색, 종류별 필터, 원하는 개수만큼 주인공 옆에 생성 |
+| 설정 | 게임 속도 x0.5 ~ x10 |
+
+토글 상태와 메뉴 키는 `BepInEx/config/keyrose.cardcultivation.cheat.cfg` 에 저장된다.
+
+## 설치
+1. [BepInEx 6 bleeding edge](https://builds.bepinex.dev/projects/bepinex_be) 의 `BepInEx-Unity.IL2CPP-win-x64` 를 게임 폴더에 압축 해제
+2. 게임을 한 번 실행해 `BepInEx/interop` 생성 (첫 실행은 몇 분 걸림)
+3. `CardCultivationCheat.dll` 을 `BepInEx/plugins/` 에 넣기
+
+제거: `BepInEx/plugins/CardCultivationCheat.dll` 삭제 (BepInEx 자체를 지우려면 `winhttp.dll`, `doorstop_config.ini`, `BepInEx/`, `dotnet/` 삭제).
+치트 사용 전 `%USERPROFILE%\AppData\LocalLow\DarkIndex\CardCultivation\SaveRecord` 백업 권장.
+
+## 빌드
+.NET 6+ SDK 필요. 게임 폴더가 기본 경로가 아니면 `-p:GameDir=...` 지정.
+```bash
+dotnet build -c Release
+```
+빌드 후 자동으로 게임의 `BepInEx/plugins` 에 복사된다 (`-p:Deploy=false` 로 끔).
+
+## 구조
+- `Plugin.cs` 진입점, 설정, Harmony 패치 등록
+- `CombatPatches.cs` `CardFightFSMEntityLogic.DamageHealth/DamageArmorHealth` 프리픽스로 무적/즉사
+- `CheatBehaviour.cs` IMGUI 창, 카드 생성(`CardInfoHelper.CreateBaseEntityData` → `GameMgr.ShowEntity`), 유지형 치트
