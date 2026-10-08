@@ -34,11 +34,12 @@ MAGIC = b"UnityFS\0"
 
 # 치트 메뉴용 BepInEx (치트 플러그인을 빌드한 버전에 고정). 온라인판은 설치 때 받고,
 # 오프라인판은 릴리스 zip 에 exe 와 나란히 들어 있다.
-BEPINEX_ZIP = "BepInEx-Unity.IL2CPP-win-x64-6.0.0-pre.2.zip"
-BEPINEX_URL = ("https://github.com/BepInEx/BepInEx/releases/download/v6.0.0-pre.2/"
-               "BepInEx-Unity.IL2CPP-win-x64-6.0.0-pre.2.zip")  # builds.bepinex.dev 는 너무 느림
-BEPINEX_SHA256 = "616ec7eb06cf11b2a0000e8fcef04d1b12bb58e84a2e0bdac9523234fc193ceb"
-BEPINEX_SKIP = {"changelog.txt"}  # 게임 폴더의 같은 이름 파일을 덮어쓰지 않는다
+# 게임의 IL2CPP 메타데이터가 v31 이라 6.0.0-pre.2(GitHub 릴리스, v29 까지)는 못 쓰고 bleeding edge 빌드가 필요하다.
+BEPINEX_ZIP = "BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.788+5b766a3.zip"
+BEPINEX_URL = ("https://builds.bepinex.dev/projects/bepinex_be/788/"
+               "BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.788%2B5b766a3.zip")
+BEPINEX_SHA256 = "f4cc496bd098a0df4164b81e3737297707f13a47c2478dba2f60eefab784817a"
+BEPINEX_SKIP = {"changelog.txt"}  # BepInEx 변경 기록은 게임 폴더에 필요 없다
 BEPINEX_OWNED = ["BepInEx", "dotnet", "winhttp.dll", "doorstop_config.ini", ".doorstop_version"]
 CHEAT_DLL = "CardCultivationCheat.dll"
 SAVE_DIR = r"%USERPROFILE%\AppData\LocalLow\DarkIndex\CardCultivation\SaveRecord"
