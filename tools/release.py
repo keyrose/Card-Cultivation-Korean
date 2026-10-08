@@ -1,6 +1,6 @@
 """배포용 패치 설치 파일 만들기.
 
-python release.py 1.0.0
+python release.py 1.0.2
 
 1. build.py 를 돌리면서 바꾼 이미지를 모두 모은다
 2. dist/payload/ 에 번역(ko.json), 이미지(PNG, 중복 제거), 한글 글꼴, manifest.json 작성
@@ -122,7 +122,7 @@ def make_exe(version):
 
 
 if __name__ == "__main__":
-    ver = sys.argv[1] if len(sys.argv) > 1 else "1.0.0"
+    ver = sys.argv[1] if len(sys.argv) > 1 else "1.0.2"
     if "--exe-only" not in sys.argv:
         make_payload(ver)
     make_exe(ver)
