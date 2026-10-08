@@ -60719,38 +60719,38 @@
  },
  {
   "key": "MakeDesc_SoulTieGuXiong",
-  "zh": "<line-indent=20%>我可以将暴君(铁骨熊)的元婴炼化，此举会导致暴君永久死亡，但可以炼制出它的一把专属法宝<sprite=25>；",
+  "zh": "<line-indent=20%>我可以将暴君(铁骨熊)的元婴炼化，此举会导致暴君永久死亡，但可以炼制出它的一样<sprite=25>专属物品(法宝/灵兽/傀儡)；",
   "zht": "<line-indent=20%>我可以將暴君(鐵骨熊)的元嬰煉化，此舉會導致暴君永久死亡，但可以煉製出它的一把專屬法寶<sprite=25>；",
-  "en": "<line-indent=20%>I can refine the Tyrant's (Iron Bone Bear) Nascent Soul; this will cause the Tyrant to die permanently, but it can be refined into one of its exclusive Artifacts <sprite=25>;",
-  "ru": "<line-indent=20%>Я могу переработать Зарождающуюся Душу Тирана (Железокостного Медведя); это приведёт к окончательной смерти Тирана, но позволит создать один из его эксклюзивных Артефактов <sprite=25>;"
+  "en": "<line-indent=20%>I can refine the Tyrant's (Iron Bone Bear) Nascent Soul; this will cause the Tyrant to die permanently, but can refine one of its <sprite=25> exclusive items (artifact / spirit beast / puppet);",
+  "ru": "<line-indent=20%>Я могу переработать Зарождающуюся Душу Тирана (Железокостного Медведя); это приведёт к окончательной смерти Тирана, но можно выковать один из его <sprite=25> эксклюзивных предметов (магическое сокровище / духовный зверь / марионетка);"
  },
  {
   "key": "MakeDesc_SoulBeiHaiJuYao",
-  "zh": "<line-indent=20%>我可以将玄墨(北海巨妖)的元婴炼化，此举会导致玄墨永久死亡，但可以炼制出它的一把专属法宝<sprite=25>；",
-  "zht": "<line-indent=20%>我可以將玄墨(北海巨妖)的元嬰煉化，此舉會導致玄墨永久死亡，但可以煉製出它的一把專屬法寶<sprite=25>；",
-  "en": "<line-indent=20%>I can refine the Xuan Mo's (North Sea Kraken) Nascent Soul; this will cause the Xuan Mo to die permanently, but it can be refined into one of its exclusive Artifacts <sprite=25>;",
-  "ru": "<line-indent=20%>Я могу переработать Младенца Души Сюаньмо (Кракена Северного моря). Это приведёт к вечной смерти Сюаньмо, но я смогу выковать его уникальный артефакт<sprite=25>;"
+  "zh": "<line-indent=20%>我可以将玄墨(北海巨妖)的元婴炼化，此举会导致玄墨永久死亡，但可以炼制出它的一样<sprite=25>专属物品(法宝/灵兽/傀儡)；",
+  "zht": "<line-indent=20%>我可以將玄墨(北海巨妖)的元嬰煉化，此舉會導致玄墨永久死亡，但可以煉製出它的一樣<sprite=25>專屬物品(法寶/靈獸/傀儡)；",
+  "en": "<line-indent=20%>I can refine the Xuan Mo's (North Sea Kraken) Nascent Soul; this will cause the Xuan Mo to die permanently, but can refine one of its <sprite=25> exclusive items (artifact / spirit beast / puppet);",
+  "ru": "<line-indent=20%>Я могу переработать Младенца Души Сюаньмо (Кракена Северного моря). Это приведёт к вечной смерти Сюаньмо, но можно выковать один из его <sprite=25> эксклюзивных предметов (магическое сокровище / духовный зверь / марионетка);"
  },
  {
   "key": "MakeDesc_SoulJinChanGu",
-  "zh": "<line-indent=20%>我可以将金缕(金蝉蛊)的元婴炼化，此举会导致金缕永久死亡，但可以炼制出它的一把专属法宝/麾下专属灵兽（<sprite=25>）；",
-  "zht": "<line-indent=20%>我可以將金縷(金蟬蠱)的元嬰煉化，此舉會導致金縷永久死亡，但可以煉製出它的一把專屬法寶/麾下專屬靈獸（<sprite=25>；",
-  "en": "<line-indent=20%>I can refine the Jin Lv's (Golden Cicada Gu) Nascent Soul; this will cause the Jin Lv to die permanently, but it can be refined into one of its exclusive Artifacts <sprite=25>;",
-  "ru": "<line-indent=20%>Я могу переработать Младенца Души Золотой нити (Золотой цикадной гу). Это приведёт к вечной смерти Золотой нити, но я смогу выковать его уникальный артефакт<sprite=25>;"
+  "zh": "<line-indent=20%>我可以将金缕(金蝉蛊)的元婴炼化，此举会导致金缕永久死亡，但可以炼制出它的一样<sprite=25>专属物品(法宝/灵兽/傀儡)；",
+  "zht": "<line-indent=20%>我可以將金縷(金蟬蠱)的元嬰煉化，此舉會導致金縷永久死亡，但可以煉製出它的一樣<sprite=25>專屬物品(法寶/靈獸/傀儡)；",
+  "en": "<line-indent=20%>I can refine the Jin Lv's (Golden Cicada Gu) Nascent Soul; this will cause the Jin Lv to die permanently, but can refine one of its <sprite=25> exclusive items (artifact / spirit beast / puppet);",
+  "ru": "<line-indent=20%>Я могу переработать Младенца Души Золотой нити (Золотой цикадной гу). Это приведёт к вечной смерти Золотой нити, но можно выковать один из его <sprite=25> эксклюзивных предметов (магическое сокровище / духовный зверь / марионетка);"
  },
  {
   "key": "MakeDesc_SoulHuoDou",
-  "zh": "<line-indent=20%>我可以将赤牙(祸斗)的元婴炼化，此举会导致赤牙永久死亡，但可以炼制出它的一把专属法宝（<sprite=25>）；",
-  "zht": "<line-indent=20%>我可以將赤牙(禍斗)的元婴炼化，此舉會導致赤牙永久死亡，但可以煉製出它的一把專屬法寶（<sprite=25>）；",
-  "en": "<line-indent=20%>I can refine Chi Ya (Huodou)'s Nascent Soul. This will cause Chi Ya's permanent death, but I can forge one of his exclusive treasures (<sprite=25>);",
-  "ru": "<line-indent=20%>Я могу переплавить Зародышевую душу Чи Я (Хоудоу). Это приведёт к вечной смерти Чи Я, но я смогу выковать одно из его эксклюзивных магических сокровищ (<sprite=25>);"
+  "zh": "<line-indent=20%>我可以将赤牙(祸斗)的元婴炼化，此举会导致赤牙永久死亡，但可以炼制出它的一样<sprite=25>专属物品(法宝/灵兽/傀儡)；",
+  "zht": "<line-indent=20%>我可以將赤牙(禍斗)的元婴炼化，此舉會導致赤牙永久死亡，但可以煉製出它的一樣<sprite=25>專屬物品(法寶/靈獸/傀儡)；",
+  "en": "<line-indent=20%>I can refine Chi Ya (Huodou)'s Nascent Soul. This will cause Chi Ya's permanent death, but can refine one of its <sprite=25> exclusive items (artifact / spirit beast / puppet);",
+  "ru": "<line-indent=20%>Я могу переплавить Зародышевую душу Чи Я (Хоудоу). Это приведёт к вечной смерти Чи Я, но можно выковать один из его <sprite=25> эксклюзивных предметов (магическое сокровище / духовный зверь / марионетка);"
  },
  {
   "key": "MakeDesc_SoulXueTengGuShu",
-  "zh": "<line-indent=20%>我可以将饮岁(血藤古树)的元婴炼化，此举会导致饮岁永久死亡，但可以炼制出它的一把专属法宝（<sprite=25>）；",
-  "zht": "<line-indent=20%>我可以將飲歲(血藤古樹)的元婴炼化，此舉會導致飲歲永久死亡，但可以煉製出它的一把專屬法寶（<sprite=25>）；",
-  "en": "<line-indent=20%>I can refine Yin Sui (Blood Tree)'s Nascent Soul. This will cause Yin Sui's permanent death, but I can forge one of his exclusive treasures (<sprite=25>);",
-  "ru": "<line-indent=20%>Я могу переплавить Зародышевую душу Инь Суй (Древнее древо кровавой лианы). Это приведёт к вечной смерти Инь Суй, но я смогу выковать одно из его эксклюзивных магических сокровищ (<sprite=25>);"
+  "zh": "<line-indent=20%>我可以将饮岁(血藤古树)的元婴炼化，此举会导致饮岁永久死亡，但可以炼制出它的一样<sprite=25>专属物品(法宝/灵兽/傀儡)；",
+  "zht": "<line-indent=20%>我可以將飲歲(血藤古樹)的元婴炼化，此舉會導致飲歲永久死亡，但可以煉製出它的一樣<sprite=25>專屬物品(法寶/靈獸/傀儡)；",
+  "en": "<line-indent=20%>I can refine Yin Sui (Blood Tree)'s Nascent Soul. This will cause Yin Sui's permanent death, but can refine one of its <sprite=25> exclusive items (artifact / spirit beast / puppet);",
+  "ru": "<line-indent=20%>Я могу переплавить Зародышевую душу Инь Суй (Древнее древо кровавой лианы). Это приведёт к вечной смерти Инь Суй, но можно выковать один из его <sprite=25> эксклюзивных предметов (магическое сокровище / духовный зверь / марионетка);"
  },
  {
   "key": "MakeDesc_FireRockPuppet1",
@@ -67417,7 +67417,14 @@
   "ru": "Формула Договора со Зверем:<br><line-indent=20%>Звери имеют дух, люди имеют сердце — один договор заключён, пожизненные спутники.<br>Культивация <sprite=4> методов занимает больше времени, чем других методов."
  },
  {
-  "key": "WorkDesc_CondCultivate5213",
+  "key": "WorkDesc_CondCultivate5312",
+  "zh": "分神诀：<br><line-indent=20%> 一神化万念，万念仍归神。<br>修炼<sprite=4>心法的时间，会比其他心法要长。",
+  "zht": "分神訣：<br><line-indent=20%>一神化萬念，萬念仍歸神。<br>修煉<sprite=4>心法的時間，會比其他心法要長。",
+  "en": "Spirit Splitting Formula:<br><line-indent=20%> One spirit transforms into myriad thoughts; myriad thoughts return to the spirit.<br>The time required to cultivate the <sprite=4> manual is longer than other manuals.",
+  "ru": "Формула Разделения Духа:<br><line-indent=20%> Один дух превращается в мириады мыслей; мириады мыслей возвращаются к духу.<br>Время, необходимое для культивации руководства <sprite=4>, больше, чем для других руководств."
+ },
+ {
+  "key": "WorkDesc_CondCultivate5313",
   "zh": "土影诀：<br><line-indent=20%> 双足踏地，引土气自涌泉穴涌入，待土气聚到一定程度，再以心念塑形。<br>修炼<sprite=4>心法的时间，会比其他心法要长。",
   "zht": "土影訣：<br><line-indent=20%> 雙足踏地，引土氣自湧泉穴湧入，待土氣聚到一定程度，再以心念塑形。<br>修煉<sprite=4>心法的時間，會比其他心法要長。",
   "en": "Earth Shadow Formula:<br><line-indent=20%> Both feet planted on the ground, draw earth energy through the Yongquan acupoint. Once earth energy has gathered to a certain degree, use the mind to shape it.<br>Cultivating <sprite=4> methods takes longer than other methods.",
@@ -94159,23 +94166,23 @@
  {
   "key": "CollectDesc_40004",
   "zh": "<line-indent=8%>筑基期后，通过感悟合成心法累计一定次数后必定获得；",
-  "zht": "<line-indent=8%> 築基期後，透過感悟合成心法累計一定次數後必定獲得；",
+  "zht": "<line-indent=8%>築基期後，透過感悟合成心法累計一定次數後必定獲得；",
   "en": "<line-indent=8%>After the Foundation Establishment stage, it is guaranteed to be obtained after accumulating a certain number of times through comprehending and synthesizing cultivation arts;",
   "ru": "<line-indent=8%>После стадии Закладывания Основы гарантированно получается после накопления определённого количества раз путём осмысления и синтеза искусств культивации;"
  },
  {
   "key": "CollectDesc_40005",
-  "zh": "<line-indent=8%>修炼剑魂残魄后有10%概率获得；<br>击败剑冢中的剑灵后必定掉落；<br>在剑冢中自己拔剑有10%概率获得；<br>筑基期及以上的玄剑阁修士交易物有10%概率生成；<br>筑基期后，修炼思绪 + 剑芒获得；<br>结丹期后，修炼思绪 + 思绪可自选；",
-  "zht": "<line-indent=8%> 修煉劍魂殘魄後有10%機率獲得；<br>擊敗劍塚中的劍靈後必定掉落；<br>在劍塚中自己拔劍有10%機率獲得；<br>築基期及以上的玄劍閣修士交易物有10%機率生成；<br>築基期後，修煉思緒 + 劍芒獲得；<br>結丹期後，修煉思緒 + 思緒可自選；",
-  "en": "<line-indent=8%>Has a 10% chance to be obtained after cultivating Sword Soul Remnants;<br>Guaranteed drop upon defeating the Sword Spirit in the Sword Tomb;<br>Has a 10% chance to be obtained when drawing a sword on your own in the Sword Tomb;<br>Has a 10% chance to spawn in the trading wares of Profound Sword Pavilion cultivators at Foundation Establishment Stage and above;<br>Obtained after cultivating Contemplation + Sword Radiance upon reaching Foundation Establishment Stage;<br>Can be selected manually after cultivating Contemplation + Contemplation upon reaching Core Formation Stage;",
-  "ru": "<line-indent=8%>Выпадает с вероятностью 10% после культивации Остатков души меча;<br>Гарантированно выпадает после победы над Духом меча в Могиле мечей;<br>Выпадает с вероятностью 10% при самостоятельном вытаскивании меча в Могиле мечей;<br>С вероятностью 10% появляется в товарах для обмена у культиваторов Павильона таинственных мечей на стадии Основания фундамента и выше;<br>Получается после культивации Созерцания + Сияния меча по достижении стадии Основания фундамента;<br>Можно выбрать самостоятельно после культивации Созерцания + Созерцания по достижении стадии Образования ядра;"
+  "zh": "<line-indent=8%>修炼剑魂残魄后有50%概率获得；<br>击败剑冢中的剑灵后必定掉落；<br>在剑冢中自己拔剑有10%概率获得；<br>筑基期及以上的玄剑阁修士交易物有10%概率生成；<br>筑基期后，修炼思绪 + 剑芒获得；<br>结丹期后，修炼思绪 + 思绪可自选；",
+  "zht": "<line-indent=8%>修煉劍魂殘魄後有50%機率獲得；<br>擊敗劍塚中的劍靈後必定掉落；<br>在劍塚中自己拔劍有10%機率獲得；<br>築基期及以上的玄劍閣修士交易物有10%機率生成；<br>築基期後，修煉思緒 + 劍芒獲得；<br>結丹期後，修煉思緒 + 思緒可自選；",
+  "en": "<line-indent=8%>Has a 50% chance to be obtained after cultivating Sword Soul Remnants;<br>Guaranteed drop upon defeating the Sword Spirit in the Sword Tomb;<br>Has a 10% chance to be obtained when drawing a sword on your own in the Sword Tomb;<br>Has a 10% chance to spawn in the trading wares of Profound Sword Pavilion cultivators at Foundation Establishment Stage and above;<br>Obtained after cultivating Contemplation + Sword Radiance upon reaching Foundation Establishment Stage;<br>Can be selected manually after cultivating Contemplation + Contemplation upon reaching Core Formation Stage;",
+  "ru": "<line-indent=8%>Выпадает с вероятностью 50% после культивации Остатков души меча;<br>Гарантированно выпадает после победы над Духом меча в Могиле мечей;<br>Выпадает с вероятностью 10% при самостоятельном вытаскивании меча в Могиле мечей;<br>С вероятностью 10% появляется в товарах для обмена у культиваторов Павильона таинственных мечей на стадии Основания фундамента и выше;<br>Получается после культивации Созерцания + Сияния меча по достижении стадии Основания фундамента;<br>Можно выбрать самостоятельно после культивации Созерцания + Созерцания по достижении стадии Образования ядра;"
  },
  {
   "key": "CollectDesc_40006",
-  "zh": "<line-indent=8%>修炼金刚拳法(二)，混元破障拳后获得<br>筑基期后，思绪 + 身法修炼后必定获得；<br>修炼顿悟后可自选；<br>在金芒矿/凝土墟中修炼御物必定获得；<br>在剑冢拔剑有10%概率获得；<br>击败剑冢中的<sprite=25>小妖剑必定获得；<br>结丹期后，修炼思绪 + 思绪可自选；",
-  "zht": "<line-indent=8%> 修煉金剛拳法(二)，混元破障拳後獲得<br>築基期後，思緒 + 身法修煉後必定獲得；<br>修煉頓悟後可自選；<br>在金芒礦 / 凝土墟中修煉御物必定獲得；<br>在劍塚拔劍有 10% 機率獲得；<br>擊敗劍塚中的 <sprite=25> 小妖劍必定獲得；<br>結丹期後，修煉思緒 + 思緒可自選；",
-  "en": "<line-indent=8%>Obtained after cultivating Vajra Fist Art (II) and Primordial Chaos Barrier-Breaking Fist<br>Guaranteed to obtain after cultivating Contemplation + Movement Technique upon reaching Foundation Establishment Stage;<br>Can be selected manually after cultivating Sudden Enlightenment;<br>Guaranteed to obtain when cultivating Object Control in Golden Aura Mine / Earthen Ruins;<br>Has a 10% chance to obtain when drawing a sword in the Sword Tomb;<br>Guaranteed to obtain upon defeating the <sprite=25> Lesser Demon Sword in the Sword Tomb;<br>Can be selected manually after cultivating Contemplation + Contemplation upon reaching Core Formation Stage;",
-  "ru": "<line-indent=8%>Получается после культивации Искусства кулака Ваджры (II) и Кулака преодоления преград изначального хаоса<br>Гарантированно получается после культивации Созерцания + Техники передвижения по достижении стадии Основания фундамента;<br>Можно выбрать самостоятельно после культивации Внезапного просветления;<br>Гарантированно получается при культивации Управления предметами в Шахте золотого сияния / Руинах сгущённой земли;<br>Выпадает с вероятностью 10% при вытаскивании меча в Могиле мечей;<br>Гарантированно выпадает после победы над <sprite=25> Малым демоническим мечом в Могиле мечей;<br>Можно выбрать самостоятельно после культивации Созерцания + Созерцания по достижении стадии Образования ядра;"
+  "zh": "<line-indent=8%>修炼金刚拳法(二)，混元破障拳后获得<br>筑基期后，思绪 + 身法修炼后必定获得；<br>修炼顿悟后可自选；<br>在金芒矿/凝土墟中修炼御物必定获得；<br>在剑冢拔剑有10%概率获得；<br>击败剑冢中的<sprite=25>小妖剑必定获得；<br>结丹期后，修炼思绪 + 思绪可自选；修炼剑魂残魄后有50%概率获得；",
+  "zht": "<line-indent=8%>修煉金剛拳法(二)，混元破障拳後獲得<br>築基期後，思緒 + 身法修煉後必定獲得；<br>修煉頓悟後可自選；<br>在金芒礦 / 凝土墟中修煉御物必定獲得；<br>在劍塚拔劍有 10% 機率獲得；<br>擊敗劍塚中的 <sprite=25> 小妖劍必定獲得；<br>結丹期後，修煉思緒 + 思緒可自選；修煉劍魂殘魄後有50%機率獲得；",
+  "en": "<line-indent=8%>Obtained after cultivating Vajra Fist Art (II) and Primordial Chaos Barrier-Breaking Fist<br>Guaranteed to obtain after cultivating Contemplation + Movement Technique upon reaching Foundation Establishment Stage;<br>Can be selected manually after cultivating Sudden Enlightenment;<br>Guaranteed to obtain when cultivating Object Control in Golden Aura Mine / Earthen Ruins;<br>Has a 10% chance to obtain when drawing a sword in the Sword Tomb;<br>Guaranteed to obtain upon defeating the <sprite=25> Lesser Demon Sword in the Sword Tomb;<br>Can be selected manually after cultivating Contemplation + Contemplation upon reaching Core Formation Stage;Has a 50% chance to be obtained after cultivating Sword Soul Remnants;",
+  "ru": "<line-indent=8%>Получается после культивации Искусства кулака Ваджры (II) и Кулака преодоления преград изначального хаоса<br>Гарантированно получается после культивации Созерцания + Техники передвижения по достижении стадии Основания фундамента;<br>Можно выбрать самостоятельно после культивации Внезапного просветления;<br>Гарантированно получается при культивации Управления предметами в Шахте золотого сияния / Руинах сгущённой земли;<br>Выпадает с вероятностью 10% при вытаскивании меча в Могиле мечей;<br>Гарантированно выпадает после победы над <sprite=25> Малым демоническим мечом в Могиле мечей;<br>Можно выбрать самостоятельно после культивации Созерцания + Созерцания по достижении стадии Образования ядра;Выпадает с вероятностью 50% после культивации Остатков души меча;"
  },
  {
   "key": "CollectDesc_40007",
@@ -94264,14 +94271,14 @@
  {
   "key": "CollectDesc_40203",
   "zh": "<line-indent=8%>筑基期后，修炼思绪 + 思绪有25%概率获得；<br>修炼顿悟后可自选；<br>仅结丹&元婴期时，培养提升<sprite=3>材料品质一定次数后必定获得；<br>在火云树修炼思绪 + 思绪必定获得；<br>在剑冢拔剑有10%概率获得；<br>筑基期后，修炼思绪 + 控火必定获得；<br>筑基后，主角的死亡有概率获得；<br>结丹期后，修炼思绪 + 思绪可自选；",
-  "zht": "<line-indent=8%> 築基期後，修煉思緒 + 思緒有 25% 機率獲得；<br>修煉頓悟後可自選；<br>僅結丹&元嬰期時，培養提升<sprite=3>材料品質一定次數後必定獲得；<br>在火雲樹修煉思緒 + 思緒必定獲得；<br>在劍塚拔劍有 10% 機率獲得；<br>築基期後，修煉思緒 + 控火必定獲得；<br>築基後，主角的死亡有概率獲得；<br>結丹期後，修煉思緒 + 思緒可自選；",
+  "zht": "<line-indent=8%>築基期後，修煉思緒 + 思緒有 25% 機率獲得；<br>修煉頓悟後可自選；<br>僅結丹&元嬰期時，培養提升<sprite=3>材料品質一定次數後必定獲得；<br>在火雲樹修煉思緒 + 思緒必定獲得；<br>在劍塚拔劍有 10% 機率獲得；<br>築基期後，修煉思緒 + 控火必定獲得；<br>築基後，主角的死亡有概率獲得；<br>結丹期後，修煉思緒 + 思緒可自選；",
   "en": "<line-indent=8%>Has a 25% chance to be obtained by cultivating Contemplation + Contemplation after the Foundation Establishment Stage;<br>Can be selected manually after cultivating Sudden Enlightenment;<br>Only during Core Formation & Nascent Soul Stages, guaranteed to obtain after cultivating and upgrading <sprite=3> material quality a certain number of times;<br>Guaranteed to obtain when cultivating Contemplation + Contemplation at the Fire Cloud Tree;<br>Has a 10% chance to be obtained when drawing a sword in the Sword Tomb;<br>Guaranteed to obtain by cultivating Contemplation + Fire Control after the Foundation Establishment Stage;<br>Has a chance to be obtained upon the protagonist's death after Foundation Establishment;<br>Can be selected manually after cultivating Contemplation + Contemplation upon reaching the Core Formation Stage;",
   "ru": "<line-indent=8%>Выпадает с вероятностью 25% при культивации Созерцания + Созерцания по достижении стадии Основания фундамента;<br>Можно выбрать самостоятельно после культивации Внезапного просветления;<br>Только на стадиях Образования ядра и Зародышевой души гарантированно получается после определённого количества улучшений качества материалов <sprite=3>;<br>Гарантированно получается при культивации Созерцания + Созерцания у Дерева огненных облаков;<br>Выпадает с вероятностью 10% при вытаскивании меча в Могиле мечей;<br>Гарантированно получается при культивации Созерцания + Управления огнём по достижении стадии Основания фундамента;<br>Выпадает с некоторой вероятностью при смерти главного героя после стадии Основания фундамента;<br>Можно выбрать самостоятельно после культивации Созерцания + Созерцания по достижении стадии Образования ядра;"
  },
  {
   "key": "CollectDesc_40204",
   "zh": "<line-indent=8%>筑基期后，修炼思绪 + 思绪有25%概率获得；<br>筑基期后，修炼思绪 + 药理必定获得；<br>结丹&元婴期时，炼制丹药会积累获得概率；<br>修炼顿悟后可自选；<br>结丹期后，修炼思绪 + 思绪可自选；",
-  "zht": "<line-indent=8%> 築基期後，修煉思緒 + 思緒有25%機率獲得；<br>築基期後，修煉思緒 + 藥理必定獲得；<br>結丹 & 元嬰期時，煉製丹藥會累積獲得機率；<br>修煉頓悟後可自選；<br>結丹期後，修煉思緒 + 思緒可自選；",
+  "zht": "<line-indent=8%>築基期後，修煉思緒 + 思緒有25%機率獲得；<br>築基期後，修煉思緒 + 藥理必定獲得；<br>結丹 & 元嬰期時，煉製丹藥會累積獲得機率；<br>修煉頓悟後可自選；<br>結丹期後，修煉思緒 + 思緒可自選；",
   "en": "<line-indent=8%>Has a 25% chance to be obtained by cultivating Contemplation + Contemplation after the Foundation Establishment Stage;<br>Guaranteed to obtain by cultivating Contemplation + Pharmacology after the Foundation Establishment Stage;<br>During Core Formation & Nascent Soul Stages, each alchemical pill concoction accumulates acquisition probability;<br>Can be selected manually after cultivating Sudden Enlightenment;<br>Can be selected manually after cultivating Contemplation + Contemplation upon reaching the Core Formation Stage;",
   "ru": "<line-indent=8%>Выпадает с вероятностью 25% при культивации Созерцания + Созерцания по достижении стадии Основания фундамента;<br>Гарантированно получается при культивации Созерцания + Фармакологии по достижении стадии Основания фундамента;<br>На стадиях Образования ядра и Зародышевой души каждое приготовление алхимических пилюль накапливает вероятность получения;<br>Можно выбрать самостоятельно после культивации Внезапного просветления;<br>Можно выбрать самостоятельно после культивации Созерцания + Созерцания по достижении стадии Образования ядра;"
  },
@@ -94495,14 +94502,14 @@
  {
   "key": "CollectDesc_51410",
   "zh": "<line-indent=8%>元婴期后，修炼悟道 + 归一 + 归一/顿悟后可自选；",
-  "zht": "<line-indent=8%> 元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
+  "zht": "<line-indent=8%>元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
   "en": "<line-indent=8%>After the Nascent Soul stage, you may select one yourself after cultivating Enlightenment + Unification + Unification/Epiphany;",
   "ru": "<line-indent=8%>После стадии Зародившейся души можно выбрать самостоятельно после культивации Просветления + Единения + Единения/Озарения;"
  },
  {
   "key": "CollectDesc_51411",
   "zh": "<line-indent=8%>元婴期后，修炼悟道 + 归一 + 归一/顿悟后可自选；",
-  "zht": "<line-indent=8%> 元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
+  "zht": "<line-indent=8%>元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
   "en": "<line-indent=8%>After the Nascent Soul stage, you may select one yourself after cultivating Enlightenment + Unification + Unification/Epiphany;",
   "ru": "<line-indent=8%>После стадии Зародившейся души можно выбрать самостоятельно после культивации Просветления + Единения + Единения/Озарения;"
  },
@@ -94740,7 +94747,7 @@
  {
   "key": "CollectDesc_53412",
   "zh": "<line-indent=8%>元婴期后，修炼悟道 + 归一 + 归一/顿悟后可自选；",
-  "zht": "<line-indent=8%> 元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
+  "zht": "<line-indent=8%>元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
   "en": "<line-indent=8%>After the Nascent Soul stage, you may select one yourself after cultivating Enlightenment + Unification + Unification/Epiphany;",
   "ru": "<line-indent=8%>После стадии Зародившейся души можно выбрать самостоятельно после культивации Просветления + Единения + Единения/Озарения;"
  },
@@ -94852,14 +94859,14 @@
  {
   "key": "CollectDesc_54410",
   "zh": "<line-indent=8%>元婴期后，修炼悟道 + 归一 + 归一/顿悟后可自选；",
-  "zht": "<line-indent=8%> 元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
+  "zht": "<line-indent=8%>元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
   "en": "<line-indent=8%>After the Nascent Soul stage, you may select one yourself after cultivating Enlightenment + Unification + Unification/Epiphany;",
   "ru": "<line-indent=8%>После стадии Зародившейся души можно выбрать самостоятельно после культивации Просветления + Единения + Единения/Озарения;"
  },
  {
   "key": "CollectDesc_54411",
   "zh": "<line-indent=8%>元婴期后，修炼悟道 + 归一 + 归一/顿悟后可自选；",
-  "zht": "<line-indent=8%> 元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
+  "zht": "<line-indent=8%>元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
   "en": "<line-indent=8%>After the Nascent Soul stage, you may select one yourself after cultivating Enlightenment + Unification + Unification/Epiphany;",
   "ru": "<line-indent=8%>После стадии Зародившейся души можно выбрать самостоятельно после культивации Просветления + Единения + Единения/Озарения;"
  },
@@ -95006,7 +95013,7 @@
  {
   "key": "CollectDesc_56401",
   "zh": "<line-indent=8%>元婴期后，修炼悟道 + 归一 + 归一/顿悟后可自选；",
-  "zht": "<line-indent=8%> 元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
+  "zht": "<line-indent=8%>元婴期後，修煉悟道 + 歸一 + 歸一 / 頓悟後可自選；",
   "en": "<line-indent=8%>After the Nascent Soul stage, you may select one yourself after cultivating Enlightenment + Unification + Unification/Epiphany;",
   "ru": "<line-indent=8%>После стадии Зародившейся души можно выбрать самостоятельно после культивации Просветления + Единения + Единения/Озарения;"
  },
@@ -95034,14 +95041,14 @@
  {
   "key": "CollectDesc_57205",
   "zh": "<line-indent=8%>修炼悟道 + 丹道 + 身法后领悟；",
-  "zht": "<line-indent=8%> 修煉悟道 + 丹道 + 身法後領悟；",
+  "zht": "<line-indent=8%>修煉悟道 + 丹道 + 身法後領悟；",
   "en": "<line-indent=8%>Comprehended after cultivating Enlightenment + Dao of Alchemy + Body Control;",
   "ru": "<line-indent=8%>Постигается после освоения Просветления + Дао алхимии + Управления телом;"
  },
  {
   "key": "CollectDesc_57206",
   "zh": "<line-indent=8%>修炼悟道 + 丹道 + 剑芒后领悟；",
-  "zht": "<line-indent=8%> 修煉悟道 + 丹道 + 劍芒後領悟；",
+  "zht": "<line-indent=8%>修煉悟道 + 丹道 + 劍芒後領悟；",
   "en": "<line-indent=8%>Comprehended after cultivating Enlightenment + Dao of Alchemy + Sword Edge;",
   "ru": "<line-indent=8%>Постигается после освоения Просветления + Дао алхимии + Мечное лезвие;"
  },
@@ -95062,21 +95069,21 @@
  {
   "key": "CollectDesc_57303",
   "zh": "<line-indent=8%>结丹期后，修炼悟道 + 凝聚 + 心境后领悟；",
-  "zht": "<line-indent=8%> 結丹期後，修煉悟道 + 凝聚 + 心境後領悟；",
+  "zht": "<line-indent=8%>結丹期後，修煉悟道 + 凝聚 + 心境後領悟；",
   "en": "<line-indent=8%>Unlocked after reaching the Core Formation Stage and cultivating Dao Enlightenment + Condensation + Mind State;",
   "ru": "<line-indent=8%>Открывается после достижения стадии Образования ядра и культивации Просветления Дао + Конденсации + Состояния разума;"
  },
  {
   "key": "CollectDesc_57306",
   "zh": "<line-indent=8%>修炼悟道 + 包容 + 剑意后领悟；",
-  "zht": "<line-indent=8%> 修煉悟道 + 包容 + 劍意後領悟；",
+  "zht": "<line-indent=8%>修煉悟道 + 包容 + 劍意後領悟；",
   "en": "<line-indent=8%>Unlocked after cultivating Dao Enlightenment + Tolerance + Sword Intent;",
   "ru": "<line-indent=8%>Открывается после культивации Просветления Дао + Терпимости + Намерения меча;"
  },
  {
   "key": "CollectDesc_58301",
   "zh": "<line-indent=8%>结丹期后，修炼悟道 + 凝聚 + 御物后领悟；",
-  "zht": "<line-indent=8%> 結丹期後，修煉悟道 + 凝聚 + 御物後領悟；",
+  "zht": "<line-indent=8%>結丹期後，修煉悟道 + 凝聚 + 御物後領悟；",
   "en": "<line-indent=8%>After the Core Formation stage, it is comprehended after cultivating Enlightenment + Condensation + Object Control;",
   "ru": "<line-indent=8%>После стадии Образования ядра навык осваивается после культивации Просветления + Конденсации + Управления предметами;"
  },
