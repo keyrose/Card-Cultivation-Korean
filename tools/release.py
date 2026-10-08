@@ -1,10 +1,13 @@
 """배포용 패치 설치 파일 만들기.
 
-python release.py 1.0.0
+python release.py 1.0.0 [--cheat 치트.dll]
 
 1. build.py 를 돌리면서 바꾼 이미지를 모두 모은다
 2. dist/payload/ 에 번역(ko.json), 이미지(PNG, 중복 제거), 한글 글꼴, manifest.json 작성
+   치트 플러그인(기본: cheat/bin/Release/net6.0/)이 있으면 payload/cheat/ 에 넣는다
 3. PyInstaller 로 installer.py 를 exe 하나로 묶고 zip 으로 압축
+   - 온라인판 _vX.Y.Z.zip: exe 만. 치트 메뉴를 고르면 설치 때 BepInEx 를 내려받는다
+   - 오프라인판 _vX.Y.Z_offline.zip: exe + BepInEx zip (치트 플러그인이 있을 때만)
 """
 import hashlib
 import io
@@ -13,13 +16,16 @@ import shutil
 import subprocess
 import sys
 import zipfile
+from pathlib import Path
 
 import build
 from common import BUILD_DIR, DATA_DIR, KR_FONT, ROOT, TRANS_DIR, original
+from installer import BEPINEX_SHA256, BEPINEX_URL, BEPINEX_ZIP, CHEAT_DLL, download
 
 DIST = ROOT / "dist"
 PAYLOAD = DIST / "payload"
 EXE_NAME = "CardCultivation_KoreanPatch"
+CHEAT_BUILD = ROOT / "cheat" / "bin" / "Release" / "net6.0" / CHEAT_DLL
 
 
 def sha256_file(p):
@@ -70,6 +76,29 @@ def make_payload(version):
     print(f"payload: 이미지 {n}개 (고유 {len(seen)}개), 파일 {len(files)}개")
 
 
+def add_cheat(src):
+    """치트 플러그인을 payload 에 넣는다. 없으면 치트 메뉴 없는 릴리스"""
+    dst = PAYLOAD / "cheat"
+    shutil.rmtree(dst, ignore_errors=True)
+    if src is None or not src.exists():
+        print("치트 플러그인 없음 → 한글 패치만 (빌드: cd cheat && dotnet build -c Release)")
+        return False
+    dst.mkdir(parents=True)
+    shutil.copy2(src, dst / CHEAT_DLL)
+    print("치트 플러그인:", src)
+    return True
+
+
+def bepinex_zip():
+    """오프라인판에 넣을 BepInEx zip (dist/ 에 받아 둔다)"""
+    z = DIST / BEPINEX_ZIP
+    if not z.exists() or sha256_file(z) != BEPINEX_SHA256:
+        print("BepInEx 내려받는 중...")
+        download(BEPINEX_URL, z)
+        assert sha256_file(z) == BEPINEX_SHA256, "BepInEx zip 해시 불일치"
+    return z
+
+
 README = """Card Cultivation 한글 패치 v{version}
 =====================================
 
@@ -80,7 +109,7 @@ README = """Card Cultivation 한글 패치 v{version}
    - exe 를 게임 폴더(CardCultivation.exe 가 있는 곳)에 넣고 실행해도 됩니다.
 3. 게임 실행 → 설정(Options) → Language → '한국어' 선택.
 
-[제거]
+{cheat}[제거]
 같은 exe 를 실행하고 2번(원본으로 복구)을 선택합니다.
 원본 파일은 게임 폴더의 KoreanPatch_backup 폴더에 보관됩니다.
 
@@ -91,6 +120,24 @@ README = """Card Cultivation 한글 패치 v{version}
 - 영어 언어 자리를 한국어로 바꾸는 방식이라 패치 후에는 영어 대신 한국어가 나옵니다.
 - 비공식 팬 번역입니다. 문제/오역 제보: https://github.com/keyrose/Card-Cultivation-Korean
 - 포함 글꼴: Noto Serif KR, East Sea Dokdo, Song Myung (SIL Open Font License 1.1)
+"""
+
+README_CHEAT = """[치트 메뉴 (선택)]
+3번을 선택하면 한글 패치와 함께 인게임 치트 메뉴(F1)를 설치합니다.
+- 치트 메뉴는 BepInEx 6 모드 로더가 필요합니다. 이미 설치되어 있으면 그대로 씁니다.
+{bepinex}- 설치 후 첫 실행은 BepInEx 준비 때문에 몇 분 걸립니다.
+- 치트를 쓰기 전에 세이브 폴더를 백업해 두세요:
+  %USERPROFILE%\\AppData\\LocalLow\\DarkIndex\\CardCultivation\\SaveRecord
+- 2번(원본으로 복구)을 선택하면 치트 메뉴와 패치가 설치한 BepInEx 도 함께 제거됩니다.
+
+"""
+README_ONLINE = """- 이 판은 설치할 때 BepInEx(약 34MB)를 인터넷에서 내려받습니다.
+  인터넷이 안 되면 아래 파일을 다른 PC에서 받아 exe 와 같은 폴더에 넣고 (zip 은 풀지 않음) 다시 3번을 선택하거나,
+  릴리스 페이지의 _offline zip 을 받으세요.
+  {url}
+"""
+README_OFFLINE = """- 이 판(_offline)에는 BepInEx 가 함께 들어 있어 인터넷 없이 설치됩니다.
+  {zip} 파일을 exe 와 같은 폴더에 둔 채로 실행하세요. (zip 은 풀지 않음)
 """
 
 
@@ -105,15 +152,37 @@ def make_exe(version):
            str(tools / "installer.py")]
     subprocess.run(cmd, check=True)
     exe = DIST / f"{EXE_NAME}.exe"
+    cheat = (PAYLOAD / "cheat" / CHEAT_DLL).exists()
+
+    def readme(bepinex):
+        c = README_CHEAT.format(bepinex=bepinex) if cheat else ""
+        return README.format(version=version, exe=EXE_NAME, cheat=c).encode("utf-8-sig")
+
     zp = DIST / f"{EXE_NAME}_v{version}.zip"
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         z.write(exe, exe.name)
-        z.writestr("읽어주세요.txt", README.format(version=version, exe=EXE_NAME).encode("utf-8-sig"))
+        z.writestr("읽어주세요.txt", readme(README_ONLINE.format(url=BEPINEX_URL)))
+    print("→", zp, f"{zp.stat().st_size / 1e6:.1f} MB")
+    if not cheat:
+        return
+    bep = bepinex_zip()
+    zp = DIST / f"{EXE_NAME}_v{version}_offline.zip"
+    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
+        z.write(exe, exe.name)
+        z.write(bep, bep.name, compress_type=zipfile.ZIP_STORED)  # 이미 압축된 zip
+        z.writestr("읽어주세요.txt", readme(README_OFFLINE.format(zip=BEPINEX_ZIP)))
     print("→", zp, f"{zp.stat().st_size / 1e6:.1f} MB")
 
 
 if __name__ == "__main__":
-    ver = sys.argv[1] if len(sys.argv) > 1 else "1.0.0"
-    if "--exe-only" not in sys.argv:
+    args = sys.argv[1:]
+    cheat_src = CHEAT_BUILD
+    if "--cheat" in args:
+        i = args.index("--cheat")
+        cheat_src = Path(args[i + 1])
+        del args[i:i + 2]
+    ver = args[0] if args and not args[0].startswith("--") else "1.0.0"
+    if "--exe-only" not in args:
         make_payload(ver)
+    add_cheat(cheat_src)
     make_exe(ver)

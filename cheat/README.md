@@ -12,6 +12,8 @@
 토글 상태와 메뉴 키는 `BepInEx/config/keyrose.cardcultivation.cheat.cfg` 에 저장된다.
 
 ## 설치
+한글 패치 설치 프로그램에서 **3번(한글 패치 + 치트 메뉴)** 을 고르면 BepInEx(be.788)와 함께 자동으로 설치된다.
+직접 설치하려면:
 1. [BepInEx 6 bleeding edge](https://builds.bepinex.dev/projects/bepinex_be) 의 `BepInEx-Unity.IL2CPP-win-x64` 를 게임 폴더에 압축 해제
 2. 게임을 한 번 실행해 `BepInEx/interop` 생성 (첫 실행은 몇 분 걸림)
 3. `CardCultivationCheat.dll` 을 `BepInEx/plugins/` 에 넣기

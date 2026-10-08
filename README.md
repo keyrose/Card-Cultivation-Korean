@@ -59,8 +59,18 @@ GitHub Releases 의 `CardCultivation_KoreanPatch_vX.Y.Z.zip` 을 받아 exe 실�
 게임 폴더를 자동으로 찾고, 원본은 게임 폴더 `KoreanPatch_backup/` 에 보관한다. 2번으로 복구.
 게임 원본 파일은 배포하지 않고, 사용자 PC의 파일에 번역·글꼴·이미지를 직접 적용한다.
 
-릴리스 만들기: `cd tools && python release.py 1.0.0` → `dist/CardCultivation_KoreanPatch_v1.0.1.zip`
+치트 메뉴(`cheat/`, F1)를 넣은 릴리스는 메뉴에 **3번(한글 패치 + 치트 메뉴)** 이 생긴다.
+치트 메뉴에는 BepInEx 6(약 34MB)가 필요해서 릴리스를 두 가지로 낸다.
+- `..._vX.Y.Z.zip` (온라인판): exe 만. 3번을 고르면 BepInEx 를 내려받는다.
+  인터넷이 안 되면 받을 주소를 안내하고, 받은 zip 을 exe 옆에 두면 그것을 쓴다.
+- `..._vX.Y.Z_offline.zip` (오프라인판): exe + BepInEx zip. 내려받지 않고 설치한다.
+
+이미 BepInEx 가 있으면 플러그인만 넣는다. 2번(복구)은 치트 플러그인과, 패치가 설치한 BepInEx 만 지운다.
+
+릴리스 만들기: `cd tools && python release.py 1.0.0` → `dist/CardCultivation_KoreanPatch_v1.0.0.zip`
 (PyInstaller 필요: `pip install pyinstaller`)
+- 치트 메뉴 포함: 먼저 `cd cheat && dotnet build -c Release` (기본 경로의 DLL 을 자동으로 넣음, 다른 DLL 은 `--cheat 경로`)
+  → 온라인판과 `..._offline.zip` 이 함께 만들어진다. BepInEx 버전은 `installer.py` 의 `BEPINEX_*` 에 고정.
 
 ## 빌드 & 설치 (개발용)
 필요: Python 3, `pip install UnityPy fonttools opencv-contrib-python-headless`.

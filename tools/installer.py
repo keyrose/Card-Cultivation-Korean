@@ -4,6 +4,7 @@
   - 텍스트: lang_tbtextmapper 의 영어 열 → 한국어, 언어 표시명 → 한국어
   - 폰트: 게임 폴백 폰트에 한글 글리프 병합 (Noto Serif KR, SIL OFL)
   - 이미지: 한글화한 텍스처로 교체
+  - (선택) 치트 메뉴: BepInEx 6 + 치트 플러그인 (F1)
 원본은 게임 폴더의 KoreanPatch_backup/ 에 보관하고, 메뉴에서 복구할 수 있다.
 """
 import hashlib
@@ -11,7 +12,10 @@ import json
 import os
 import shutil
 import sys
+import tempfile
 import traceback
+import urllib.request
+import zipfile
 from pathlib import Path
 
 import UnityPy
@@ -28,10 +32,25 @@ FONT_NAME = "FangZhengLiBian_GBK_0"
 LANG_COL = 3  # key, zh, zht, en, ru → en 자리에 한국어
 MAGIC = b"UnityFS\0"
 
+# 치트 메뉴용 BepInEx (치트 플러그인을 빌드한 버전에 고정). 온라인판은 설치 때 받고,
+# 오프라인판은 릴리스 zip 에 exe 와 나란히 들어 있다.
+BEPINEX_ZIP = "BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.788+5b766a3.zip"
+BEPINEX_URL = ("https://builds.bepinex.dev/projects/bepinex_be/788/"
+               "BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.788%2B5b766a3.zip")
+BEPINEX_SHA256 = "f4cc496bd098a0df4164b81e3737297707f13a47c2478dba2f60eefab784817a"
+BEPINEX_SKIP = {"changelog.txt"}  # 게임 폴더의 같은 이름 파일을 덮어쓰지 않는다
+BEPINEX_OWNED = ["BepInEx", "dotnet", "winhttp.dll", "doorstop_config.ini", ".doorstop_version"]
+CHEAT_DLL = "CardCultivationCheat.dll"
+SAVE_DIR = r"%USERPROFILE%\AppData\LocalLow\DarkIndex\CardCultivation\SaveRecord"
+
 
 def payload_dir() -> Path:
     base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent / "dist"))
     return base / "payload"
+
+
+def exe_dir() -> Path:
+    return Path(sys.executable).parent if getattr(sys, "frozen", False) else Path.cwd()
 
 
 # ---------------------------------------------------------------- 게임 폴더 찾기
@@ -75,8 +94,7 @@ def find_game():
     cands = []
     if len(sys.argv) > 1:
         cands.append(Path(sys.argv[1]))
-    exe_dir = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path.cwd()
-    cands += [exe_dir, Path.cwd()]
+    cands += [exe_dir(), Path.cwd()]
     cands += [lib / STEAM_SUBDIR for lib in steam_libraries()]
     for c in cands:
         if (c / GAME_EXE).exists():
@@ -133,6 +151,8 @@ class Patch:
         self.manifest = json.loads((p / "manifest.json").read_text(encoding="utf-8"))
         self.ko = json.loads((p / "ko.json").read_text(encoding="utf-8"))
         self.font = str(p / "NotoSerifKR-VF.ttf")
+        cheat = p / "cheat" / CHEAT_DLL
+        self.cheat = cheat if cheat.exists() else None  # 치트 플러그인을 넣지 않은 릴리스면 None
         self._merged = None
 
     def image(self, h):
@@ -243,12 +263,119 @@ def install(game: Path, patch: Patch):
     print("설치 완료! 게임 설정 → Language 에서 '한국어' 를 선택하세요.")
 
 
+# ---------------------------------------------------------------- 치트 메뉴 (선택)
+def bepinex_installed(game: Path) -> bool:
+    return (game / "BepInEx" / "core" / "BepInEx.Unity.IL2CPP.dll").exists()
+
+
+def download(url: str, dst: Path):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})  # 기본 UA 는 403
+    with urllib.request.urlopen(req, timeout=60) as r, open(dst, "wb") as f:
+        total = int(r.headers.get("Content-Length") or 0)
+        done, shown = 0, -1
+        while chunk := r.read(1 << 16):
+            f.write(chunk)
+            done += len(chunk)
+            pct = done * 100 // total if total else -1
+            if pct // 10 != shown // 10:
+                shown = pct
+                print(f"    {done / 1e6:.1f} / {total / 1e6:.1f} MB" if total else f"    {done / 1e6:.1f} MB")
+
+
+def find_bepinex_zip(tmp: Path):
+    """오프라인판(exe 옆 zip) → 없으면 내려받기. 둘 다 안 되면 None"""
+    for d in dict.fromkeys([exe_dir(), Path.cwd()]):
+        local = sorted(d.glob("BepInEx-Unity.IL2CPP-win-x64*.zip"))
+        if local:
+            z = d / BEPINEX_ZIP if (d / BEPINEX_ZIP).exists() else local[-1]
+            print("    BepInEx:", z.name)
+            if z.name != BEPINEX_ZIP:
+                print(f"    ※ 치트 메뉴는 {BEPINEX_ZIP} 기준으로 만들어졌습니다. 다른 버전은 동작하지 않을 수 있습니다.")
+            elif sha256(z) != BEPINEX_SHA256:
+                print("    ※ 파일이 손상되었습니다. 다시 받아 주세요.")
+                return None
+            return z
+    print("    BepInEx 내려받는 중... (약 34MB)")
+    z = tmp / BEPINEX_ZIP
+    try:
+        download(BEPINEX_URL, z)
+    except Exception as e:
+        print("    내려받기 실패:", e)
+        return None
+    if sha256(z) != BEPINEX_SHA256:
+        print("    내려받은 파일이 예상과 다릅니다.")
+        return None
+    return z
+
+
+def bepinex_guide():
+    print()
+    print("※ BepInEx 를 준비하지 못해 치트 메뉴를 설치하지 않았습니다. (한글 패치는 설치됨)")
+    print("  인터넷이 안 되는 PC라면 다른 PC에서 아래 파일을 받아")
+    print("  이 설치 프로그램(exe)과 같은 폴더에 넣고 다시 3번을 선택하세요. (zip 은 풀지 마세요)")
+    print("   ", BEPINEX_URL)
+    print("  또는 릴리스 페이지의 '_offline' zip 을 받으면 BepInEx 가 함께 들어 있습니다.")
+
+
+def install_cheat(game: Path, patch: Patch) -> bool:
+    bdir = game / BACKUP
+    cheat_p = bdir / "cheat.json"
+    cheat = json.loads(cheat_p.read_text(encoding="utf-8")) if cheat_p.exists() else {"bepinex": False}
+    print("치트 메뉴")
+    if not bepinex_installed(game):
+        with tempfile.TemporaryDirectory() as tmp:
+            z = find_bepinex_zip(Path(tmp))
+            if z is None:
+                bepinex_guide()
+                return False
+            with zipfile.ZipFile(z) as zf:
+                zf.extractall(game, [m for m in zf.namelist() if m not in BEPINEX_SKIP])
+        cheat["bepinex"] = True  # 패치가 깐 BepInEx → 복구할 때 함께 지운다
+        print("    BepInEx 설치")
+    else:
+        print("    BepInEx 이미 설치됨 - 그대로 사용")
+    plugins = game / "BepInEx" / "plugins"
+    plugins.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(patch.cheat, plugins / CHEAT_DLL)
+    print("    플러그인 설치:", CHEAT_DLL)
+    bdir.mkdir(parents=True, exist_ok=True)
+    cheat_p.write_text(json.dumps(cheat, indent=1), encoding="utf-8")
+    print()
+    print("치트 메뉴 설치 완료! 게임 안에서 F1 키로 엽니다.")
+    print("  - 설치 후 첫 실행은 BepInEx 준비 때문에 몇 분 걸립니다 (검은 콘솔 창이 함께 뜹니다).")
+    print("  - 치트를 쓰기 전에 세이브 폴더를 백업해 두세요:")
+    print("   ", SAVE_DIR)
+    return True
+
+
+def restore_cheat(game: Path):
+    cheat_p = game / BACKUP / "cheat.json"
+    if not cheat_p.exists():
+        return
+    cheat = json.loads(cheat_p.read_text(encoding="utf-8"))
+    dll = game / "BepInEx" / "plugins" / CHEAT_DLL
+    if dll.exists():
+        dll.unlink()
+        print("제거:", dll.relative_to(game))
+    if cheat.get("bepinex"):
+        for name in BEPINEX_OWNED:
+            p = game / name
+            if p.is_dir():
+                shutil.rmtree(p, ignore_errors=True)
+            elif p.exists():
+                p.unlink()
+            else:
+                continue
+            print("제거:", name)
+
+
 def restore(game: Path):
     bdir = game / BACKUP
     state_p = bdir / "state.json"
     if not state_p.exists():
         print("백업이 없습니다. (패치가 설치되지 않았습니다)")
         return
+    restore_cheat(game)
     state = json.loads(state_p.read_text(encoding="utf-8"))
     data_dir = game / "CardCultivation_Data"
     for rel in state:
@@ -260,8 +387,9 @@ def restore(game: Path):
 
 
 def main():
+    patch = Patch()
     print("=" * 56)
-    print(f"  {APP}  v{Patch().manifest['version']}")
+    print(f"  {APP}  v{patch.manifest['version']}")
     print("=" * 56)
     game = find_game()
     while game is None:
@@ -271,14 +399,20 @@ def main():
             game = Path(p)
     print("게임 폴더:", game)
     print()
-    print("  1) 한글 패치 설치 / 업데이트")
-    print("  2) 원본으로 복구 (패치 제거)")
-    print("  3) 종료")
-    choice = input("\n선택 (1/2/3): ").strip()
+    menu = ["1) 한글 패치 설치 / 업데이트", "2) 원본으로 복구 (패치" + (" + 치트 메뉴" if patch.cheat else "") + " 제거)"]
+    if patch.cheat:
+        menu.append("3) 한글 패치 + 치트 메뉴(F1) 설치")
+    menu.append(f"{len(menu) + 1}) 종료")
+    for m in menu:
+        print("  " + m)
+    choice = input(f"\n선택 (1~{len(menu)}): ").strip()
     print()
-    if choice == "1":
+    if choice == "1" or (choice == "3" and patch.cheat):
         print("※ 게임을 종료한 상태에서 진행하세요. 몇 분 걸릴 수 있습니다.\n")
-        install(game, Patch())
+        install(game, patch)
+        if choice == "3":
+            print()
+            install_cheat(game, patch)
     elif choice == "2":
         restore(game)
 
