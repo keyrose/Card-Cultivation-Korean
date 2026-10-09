@@ -7,7 +7,8 @@
 | 주인공 | 무적, 아군 무적, 적 즉사, 에너지 무한, 체력/에너지 회복, 최대 체력·공격·방어·최대 에너지·신혼 증가, 경지 상승, 수명 증가 |
 | 자원 | 영석/명성 카드 생성(수량 지정), 맵의 영석 더미 x10 |
 | 카드 생성 | 전체 카드 표에서 이름/ID 검색, 종류별 필터, 원하는 개수만큼 주인공 옆에 생성 |
-| 설정 | 게임 속도 x0.5 ~ x10 |
+| 시간 | 세월 정지(연도·나이는 멈추고 행동·제작은 진행), 30일/1년 전으로, 나이 1살 젊게, 시점 기록 후 되돌리기 |
+| 설정 | 게임 속도 x0.5 ~ x10, 창 크기 배율 |
 
 토글 상태와 메뉴 키는 `BepInEx/config/keyrose.cardcultivation.cheat.cfg` 에 저장된다.
 
@@ -30,7 +31,12 @@ dotnet build -c Release
 ```
 빌드 후 자동으로 게임의 `BepInEx/plugins` 에 복사된다 (`-p:Deploy=false` 로 끔).
 
+## 게임 시간
+`GameMgrComponent.elapseTime` 이 게임 시계(1일 = 1, 1년 = 360)이고 `elapseYear` 는 그 해 수.
+주인공 나이는 `gameData.AgeTime`(30세 = 10800), 수명은 `AgeMaxTime`. 세월 정지는 이 값들을 매 프레임(LateUpdate) 되돌리는 방식이라
+행동·제작 타이머는 그대로 흐른다.
+
 ## 구조
 - `Plugin.cs` 진입점, 설정, Harmony 패치 등록
 - `CombatPatches.cs` `CardFightFSMEntityLogic.DamageHealth/DamageArmorHealth` 프리픽스로 무적/즉사
-- `CheatBehaviour.cs` IMGUI 창, 카드 생성(`CardInfoHelper.CreateBaseEntityData` → `GameMgr.ShowEntity`), 유지형 치트
+- `CheatBehaviour.cs` IMGUI 창(창 영역에 투명 uGUI 판을 깔아 클릭이 게임으로 새지 않게), 카드 생성(`CardInfoHelper.CreateBaseEntityData` → `GameMgr.ShowEntity`), 유지형 치트

@@ -26,6 +26,8 @@
     <Reference Include="$(Interop)\UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="$(Interop)\UnityEngine.IMGUIModule.dll" Private="false" />
     <Reference Include="$(Interop)\UnityEngine.TextRenderingModule.dll" Private="false" />
+    <Reference Include="$(Interop)\UnityEngine.UIModule.dll" Private="false" />
+    <Reference Include="$(Interop)\UnityEngine.UI.dll" Private="false" />
     <Reference Include="$(Interop)\UnityGameFramework.Runtime.dll" Private="false" />
     <Reference Include="$(Interop)\GameFramework.dll" Private="false" />
     <Reference Include="$(Interop)\UniTask.dll" Private="false" />

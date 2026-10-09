@@ -16,7 +16,7 @@ public class CheatBehaviour : MonoBehaviour
     bool _show;
     Rect _rect = new(20, 20, 460, 620);
     int _tab;
-    static readonly string[] Tabs = { "주인공", "자원", "카드 생성", "설정" };
+    static readonly string[] Tabs = { "주인공", "자원", "카드 생성", "시간", "설정" };
 
     // 카드 생성 탭
     struct CardEntry { public int Id; public string Name; public CardType Type; public Lv Level; public string Search; }
@@ -28,6 +28,12 @@ public class CheatBehaviour : MonoBehaviour
     Vector2 _scroll;
 
     string _stoneText = "10000", _repText = "1000", _lifeText = "100";
+
+    // 시간 탭: 게임 시계(연도/경과 시간)와 주인공 나이 기록
+    struct TimeState { public float Elapse; public int Year; public float DataElapse; public int DataYear; public int Age; }
+    bool _freezeTime;
+    TimeState _frozen, _saved;
+    bool _hasSaved;
     string _status = "";
     float _statusTime;
     float _nextTick;
@@ -54,6 +60,54 @@ public class CheatBehaviour : MonoBehaviour
     static RoleEntityLogic Role
     {
         get { try { return Mgr?.GetRoleEntityLogic(); } catch { return null; } }
+    }
+
+    void LateUpdate()
+    {
+        // 세월 정지: 행동·제작 타이머는 그대로 두고 게임 시계와 나이만 매 프레임 되돌린다
+        if (!_freezeTime) return;
+        try
+        {
+            var m = Mgr;
+            if (m == null || m.gameData == null) { _freezeTime = false; return; }
+            ApplyTime(m, _frozen);
+        }
+        catch (Exception e)
+        {
+            _freezeTime = false;
+            Plugin.Logger.LogWarning("세월 정지 해제: " + e.Message);
+        }
+    }
+
+    const float YearLen = 360f; // 게임 1년 = 360일, 1일 = 경과 시간 1
+
+    /// <summary>게임 시계를 days 만큼 뒤로 돌린다 (0년째 처음보다 앞으로는 가지 않음).</summary>
+    void Rewind(GameMgrComponent m, float days)
+    {
+        var t = ReadTime(m);
+        if (t.Elapse <= 0f) throw new Exception("이미 처음 시점입니다");
+        t.Elapse = Mathf.Max(0f, t.Elapse - days);
+        t.Year = Mathf.FloorToInt(t.Elapse / YearLen);
+        t.DataElapse = t.Elapse;
+        t.DataYear = t.Year;
+        ApplyTime(m, t);
+        if (_freezeTime) _frozen = t;
+    }
+
+    static TimeState ReadTime(GameMgrComponent m)
+    {
+        var d = m.gameData;
+        return new TimeState { Elapse = m.elapseTime, Year = m.elapseYear, DataElapse = d.ElapseTime, DataYear = d.ElapseYear, Age = d.AgeTime };
+    }
+
+    static void ApplyTime(GameMgrComponent m, TimeState t)
+    {
+        var d = m.gameData;
+        m.elapseTime = t.Elapse;
+        m.elapseYear = t.Year;
+        d.ElapseTime = t.DataElapse;
+        d.ElapseYear = t.DataYear;
+        d.AgeTime = t.Age;
     }
 
     void Update()
@@ -90,7 +144,7 @@ public class CheatBehaviour : MonoBehaviour
             _show = !_show;
             e.Use();
         }
-        if (!_show) return;
+        if (!_show) { SetBlocker(false, default, 1f); return; }
 
         // 1080p 기준으로 그리고 화면 해상도에 맞춰 확대한다 (4K 에서 창이 너무 작아지지 않도록)
         float scale = Plugin.UiScale.Value > 0f ? Plugin.UiScale.Value : Mathf.Max(1f, Screen.height / 1080f);
@@ -108,6 +162,48 @@ public class CheatBehaviour : MonoBehaviour
         _rect.y = Mathf.Clamp(_rect.y, 0f, Mathf.Max(0f, Screen.height / scale - _rect.height));
 
         GUI.matrix = old;
+        SetBlocker(true, _rect, scale);
+    }
+
+    // IMGUI 창은 게임 입력을 막지 않아 클릭이 뒤의 게임 UI·카드로 새어 나간다.
+    // 창과 같은 자리에 투명한 uGUI 판을 맨 위에 깔아 게임 쪽 클릭을 받아 낸다.
+    GameObject _blocker;
+    RectTransform _blockerRect;
+
+    void SetBlocker(bool on, Rect r, float scale)
+    {
+        try
+        {
+            if (_blocker == null)
+            {
+                if (!on) return;
+                var root = new GameObject("CheatInputBlocker");
+                DontDestroyOnLoad(root);
+                var canvas = root.AddComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = short.MaxValue;
+                root.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+                var panel = new GameObject("Panel");
+                panel.transform.SetParent(root.transform, false);
+                var img = panel.AddComponent<UnityEngine.UI.Image>();
+                img.color = new Color(0f, 0f, 0f, 0f);
+                img.raycastTarget = true;
+                _blockerRect = panel.GetComponent<RectTransform>();
+                _blockerRect.anchorMin = _blockerRect.anchorMax = Vector2.zero;
+                _blockerRect.pivot = Vector2.zero;
+                _blocker = root;
+            }
+            if (_blocker.activeSelf != on) _blocker.SetActive(on);
+            if (!on) return;
+            // IMGUI 는 왼쪽 위, uGUI 는 왼쪽 아래가 원점
+            _blockerRect.anchoredPosition = new Vector2(r.x * scale, Screen.height - (r.y + r.height) * scale);
+            _blockerRect.sizeDelta = new Vector2(r.width * scale, r.height * scale);
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogWarning("입력 차단 판 오류: " + e.Message);
+            _blocker = null;
+        }
     }
 
     void DrawWindow(int id)
@@ -126,7 +222,7 @@ public class CheatBehaviour : MonoBehaviour
             if (Mgr == null || Role == null)
             {
                 GUILayout.Label("주인공을 찾지 못했습니다. 게임(세이브)을 불러온 뒤에 사용할 수 있습니다. (스토리 맨 처음에는 주인공 카드가 아직 없을 수 있습니다)");
-                if (_tab == 3) DrawSettings();
+                if (_tab == 4) DrawSettings();
             }
             else
             {
@@ -135,7 +231,8 @@ public class CheatBehaviour : MonoBehaviour
                     case 0: DrawRole(); break;
                     case 1: DrawResources(); break;
                     case 2: DrawCards(); break;
-                    case 3: DrawSettings(); break;
+                    case 3: DrawTime(); break;
+                    case 4: DrawSettings(); break;
                 }
             }
 
@@ -362,6 +459,58 @@ public class CheatBehaviour : MonoBehaviour
         var data = CardInfoHelper.CreateBaseEntityData(info, role.MapId, pos, null, null);
         if (data == null) throw new Exception($"카드 {info.Id} 데이터 생성 실패");
         return data;
+    }
+
+    // ───────────── 시간 ─────────────
+    void DrawTime()
+    {
+        var m = Mgr;
+        var d = m.gameData;
+        var now = ReadTime(m);
+        GUILayout.Label($"{now.Year + 1}년째   경과 {now.Elapse:0.0}   나이 {d.AgeTime} / 수명 {d.AgeMaxTime}");
+        GUILayout.Label($"<color=#9ab>(기록값 elapse={now.DataElapse:0.0} year={now.DataYear})</color>");
+        GUILayout.Space(6);
+
+        bool freeze = GUILayout.Toggle(_freezeTime, " 세월 정지 (연도·나이가 흐르지 않음, 행동·제작은 계속 진행)");
+        if (freeze != _freezeTime)
+        {
+            _freezeTime = freeze;
+            if (freeze) _frozen = now;
+            Status(freeze ? "세월 정지" : "세월 정지 해제");
+        }
+        GUILayout.Space(6);
+
+        GUILayout.Label("과거로 (게임 시간 1일 = 1, 1년 = 360)");
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("30일 전으로")) Run("30일 전으로", () => Rewind(m, 30f));
+        if (GUILayout.Button("1년 전으로")) Run("1년 전으로", () => Rewind(m, YearLen));
+        if (GUILayout.Button("나이 1살 젊게"))
+            Run("나이 -1세", () =>
+            {
+                d.AgeTime = Math.Max(0, d.AgeTime - (int)YearLen);
+                if (_freezeTime) _frozen.Age = d.AgeTime;
+            });
+        GUILayout.EndHorizontal();
+        GUILayout.Space(6);
+
+        GUILayout.Label("시점 되돌리기 (아이템·카드는 그대로, 시간과 나이만)");
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("지금 시점 기록"))
+        {
+            _saved = now;
+            _hasSaved = true;
+            Status($"시점 기록: {now.Year + 1}년째 {now.Elapse:0.0}");
+        }
+        GUI.enabled = _hasSaved;
+        if (GUILayout.Button(_hasSaved ? $"{_saved.Year + 1}년째 {_saved.Elapse:0.0} 로 되돌리기" : "기록 없음"))
+            Run("시점 되돌리기", () =>
+            {
+                ApplyTime(m, _saved);
+                if (_freezeTime) _frozen = _saved;
+            });
+        GUI.enabled = true;
+        GUILayout.EndHorizontal();
+        GUILayout.Label("<color=#9ab>되돌린 뒤 지나가는 해의 연말 이벤트는 다시 일어날 수 있습니다.</color>");
     }
 
     // ───────────── 설정 ─────────────
