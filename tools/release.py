@@ -1,6 +1,6 @@
 """배포용 패치 설치 파일 만들기.
 
-python release.py 1.0.0 [--cheat 치트.dll]
+python release.py 1.1.0 [--cheat 치트.dll]
 
 1. build.py 를 돌리면서 바꾼 이미지를 모두 모은다
 2. dist/payload/ 에 번역(ko.json), 이미지(PNG, 중복 제거), 한글 글꼴, manifest.json 작성
@@ -21,6 +21,7 @@ from pathlib import Path
 import build
 from common import BUILD_DIR, DATA_DIR, KR_FONT, ROOT, TRANS_DIR, original
 from installer import BEPINEX_SHA256, BEPINEX_URL, BEPINEX_ZIP, CHEAT_DLL, download
+from ui_fix import SPRITE_ASSET_FIXES
 
 DIST = ROOT / "dist"
 PAYLOAD = DIST / "payload"
@@ -61,7 +62,8 @@ def make_payload(version):
             images[rel][name] = h
 
     files = sorted({"StreamingAssets/LubanTables.dat", "resources.assets",
-                    *("StreamingAssets/" + b for b in build.FONT_BUNDLES), *images})
+                    *("StreamingAssets/" + b for b in build.FONT_BUNDLES),
+                    *("StreamingAssets/" + b for b in SPRITE_ASSET_FIXES), *images})
     manifest = {
         "version": version,
         "files": {rel: {"sha256": sha256_file(original(rel))} for rel in files},
@@ -115,6 +117,13 @@ README = """Card Cultivation 한글 패치 v{version}
 
 [게임 업데이트 후]
 스팀 업데이트로 한글이 풀리면 exe 를 다시 실행해 1번을 선택하세요.
+게임을 지우고 다시 받을 필요 없이, 업데이트된 파일을 새 원본으로 백업하고 다시 패치합니다.
+
+[자동 재적용 (추천)]
+exe 를 실행해 3번을 선택하면 스팀 실행 옵션에 넣을 한 줄이 클립보드에 복사됩니다.
+스팀 라이브러리 → Card Cultivation 우클릭 → 속성 → 일반 → 실행 옵션에 붙여넣으면,
+게임을 켤 때마다 패치가 풀렸는지 확인해 자동으로 다시 적용합니다.
+(업데이트 직후 첫 실행만 몇 분 걸립니다. 해제는 실행 옵션을 지우면 됩니다.)
 
 [참고]
 - 영어 언어 자리를 한국어로 바꾸는 방식이라 패치 후에는 영어 대신 한국어가 나옵니다.
@@ -123,7 +132,7 @@ README = """Card Cultivation 한글 패치 v{version}
 """
 
 README_CHEAT = """[치트 메뉴 (선택)]
-3번을 선택하면 한글 패치와 함께 인게임 치트 메뉴(F1)를 설치합니다.
+4번을 선택하면 한글 패치와 함께 인게임 치트 메뉴(F1)를 설치합니다.
 - 치트 메뉴는 BepInEx 6 모드 로더가 필요합니다. 이미 설치되어 있으면 그대로 씁니다.
 {bepinex}- 설치 후 첫 실행은 BepInEx 준비 때문에 몇 분 걸립니다.
 - 치트를 쓰기 전에 세이브 폴더를 백업해 두세요:
@@ -132,7 +141,7 @@ README_CHEAT = """[치트 메뉴 (선택)]
 
 """
 README_ONLINE = """- 이 판은 설치할 때 BepInEx(약 34MB)를 인터넷에서 내려받습니다.
-  인터넷이 안 되면 아래 파일을 다른 PC에서 받아 exe 와 같은 폴더에 넣고 (zip 은 풀지 않음) 다시 3번을 선택하거나,
+  인터넷이 안 되면 아래 파일을 다른 PC에서 받아 exe 와 같은 폴더에 넣고 (zip 은 풀지 않음) 다시 4번을 선택하거나,
   릴리스 페이지의 _offline zip 을 받으세요.
   {url}
 """
@@ -181,7 +190,7 @@ if __name__ == "__main__":
         i = args.index("--cheat")
         cheat_src = Path(args[i + 1])
         del args[i:i + 2]
-    ver = args[0] if args and not args[0].startswith("--") else "1.0.0"
+    ver = args[0] if args and not args[0].startswith("--") else "1.1.0"
     if "--exe-only" not in args:
         make_payload(ver)
     add_cheat(cheat_src)

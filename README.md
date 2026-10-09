@@ -4,13 +4,17 @@ Steam 게임 **Card Cultivation (修仙卡牌, App 2963600)** 비공식 한국�
 
 ## 다운로드
 
-### [⬇ 한글 패치 v1.0.1 다운로드](https://github.com/keyrose/Card-Cultivation-Korean/releases/download/v1.0.1/CardCultivation_KoreanPatch_v1.0.1.zip)
+### [⬇ 한글 패치 v1.0.3 다운로드](https://github.com/keyrose/Card-Cultivation-Korean/releases/download/v1.0.3/CardCultivation_KoreanPatch_v1.0.3.zip)
 
 ([릴리스 페이지](https://github.com/keyrose/Card-Cultivation-Korean/releases/latest) · 게임 버전 2.3.0.11_beta 기준)
 
 1. 게임을 종료하고, zip 을 풀어 `CardCultivation_KoreanPatch.exe` 실행 → **1번(설치)**
 2. 게임 실행 → **설정(Options) → Language → `한국어`**
 3. 제거는 같은 exe 에서 **2번(원본으로 복구)**, 스팀 업데이트 후 한글이 풀리면 다시 1번
+   (게임을 지우고 다시 받을 필요 없음 — 업데이트된 파일을 새 원본으로 백업하고 다시 패치)
+4. **3번(자동 재적용 설정)** 으로 나오는 한 줄을 스팀 실행 옵션
+   (라이브러리 → 게임 우클릭 → 속성 → 일반 → 실행 옵션)에 넣으면, 업데이트로 패치가 풀려도
+   게임을 켤 때 자동으로 다시 적용된다
 
 (영어 언어 자리를 한국어로 교체하는 방식이라, 패치 후에는 영어 대신 한국어가 나온다.)
 
@@ -59,15 +63,15 @@ GitHub Releases 의 `CardCultivation_KoreanPatch_vX.Y.Z.zip` 을 받아 exe 실�
 게임 폴더를 자동으로 찾고, 원본은 게임 폴더 `KoreanPatch_backup/` 에 보관한다. 2번으로 복구.
 게임 원본 파일은 배포하지 않고, 사용자 PC의 파일에 번역·글꼴·이미지를 직접 적용한다.
 
-치트 메뉴(`cheat/`, F1)를 넣은 릴리스는 메뉴에 **3번(한글 패치 + 치트 메뉴)** 이 생긴다.
+치트 메뉴(`cheat/`, F1)를 넣은 릴리스는 메뉴에 **4번(한글 패치 + 치트 메뉴)** 이 생긴다.
 치트 메뉴에는 BepInEx 6(약 34MB)가 필요해서 릴리스를 두 가지로 낸다.
-- `..._vX.Y.Z.zip` (온라인판): exe 만. 3번을 고르면 BepInEx 를 내려받는다.
+- `..._vX.Y.Z.zip` (온라인판): exe 만. 4번을 고르면 BepInEx 를 내려받는다.
   인터넷이 안 되면 받을 주소를 안내하고, 받은 zip 을 exe 옆에 두면 그것을 쓴다.
 - `..._vX.Y.Z_offline.zip` (오프라인판): exe + BepInEx zip. 내려받지 않고 설치한다.
 
 이미 BepInEx 가 있으면 플러그인만 넣는다. 2번(복구)은 치트 플러그인과, 패치가 설치한 BepInEx 만 지운다.
 
-릴리스 만들기: `cd tools && python release.py 1.0.0` → `dist/CardCultivation_KoreanPatch_v1.0.0.zip`
+릴리스 만들기: `cd tools && python release.py 1.1.0` → `dist/CardCultivation_KoreanPatch_v1.1.0.zip`
 (PyInstaller 필요: `pip install pyinstaller`)
 - 치트 메뉴 포함: 먼저 `cd cheat && dotnet build -c Release` (기본 경로의 DLL 을 자동으로 넣음, 다른 DLL 은 `--cheat 경로`)
   → 온라인판과 `..._offline.zip` 이 함께 만들어진다. BepInEx 버전은 `installer.py` 의 `BEPINEX_*` 에 고정.
