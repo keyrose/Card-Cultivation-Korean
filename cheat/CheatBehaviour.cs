@@ -8,7 +8,7 @@ using UnityGameFramework.Scripts;
 
 namespace CardCultivationCheat;
 
-/// <summary>F1 로 여는 IMGUI 치트 창과 매 프레임 유지형 치트.</summary>
+/// <summary>F8 로 여는 IMGUI 치트 창과 매 프레임 유지형 치트.</summary>
 public class CheatBehaviour : MonoBehaviour
 {
     public CheatBehaviour(IntPtr ptr) : base(ptr) { }
@@ -92,9 +92,22 @@ public class CheatBehaviour : MonoBehaviour
         }
         if (!_show) return;
 
+        // 1080p 기준으로 그리고 화면 해상도에 맞춰 확대한다 (4K 에서 창이 너무 작아지지 않도록)
+        float scale = Plugin.UiScale.Value > 0f ? Plugin.UiScale.Value : Mathf.Max(1f, Screen.height / 1080f);
+        var old = GUI.matrix;
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1f));
+
         GUI.skin.label.wordWrap = true;
+        // 기본 창 배경은 반투명이라 지도 위에서 글자가 잘 안 보인다 → 반투명 상자를 겹쳐 진하게 깐다
+        // (GUI.DrawTexture 는 게임 빌드에서 제거되어 쓸 수 없다)
+        for (int i = 0; i < 4; i++) GUI.Box(_rect, "");
         _rect = GUI.Window(0x7C17, _rect, (GUI.WindowFunction)(Action<int>)DrawWindow,
             $"Card Cultivation 치트  ({Plugin.ToggleKey.Value} 닫기)");
+        // 해상도가 바뀌어도 창이 화면 밖으로 나가지 않게
+        _rect.x = Mathf.Clamp(_rect.x, 0f, Mathf.Max(0f, Screen.width / scale - _rect.width));
+        _rect.y = Mathf.Clamp(_rect.y, 0f, Mathf.Max(0f, Screen.height / scale - _rect.height));
+
+        GUI.matrix = old;
     }
 
     void DrawWindow(int id)
@@ -112,7 +125,7 @@ public class CheatBehaviour : MonoBehaviour
 
             if (Mgr == null || Role == null)
             {
-                GUILayout.Label("게임(세이브)을 불러온 뒤에 사용할 수 있습니다.");
+                GUILayout.Label("주인공을 찾지 못했습니다. 게임(세이브)을 불러온 뒤에 사용할 수 있습니다. (스토리 맨 처음에는 주인공 카드가 아직 없을 수 있습니다)");
                 if (_tab == 3) DrawSettings();
             }
             else
@@ -362,6 +375,14 @@ public class CheatBehaviour : MonoBehaviour
                 Plugin.GameSpeed.Value = s;
                 if (Time.timeScale > 0f) Time.timeScale = s;
             }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10);
+        var ui = Plugin.UiScale.Value;
+        GUILayout.Label($"창 크기: {(ui > 0f ? $"x{ui:0.##}" : "자동 (해상도에 맞춤)")}");
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("자동")) Plugin.UiScale.Value = 0f;
+        foreach (var s in new[] { 1f, 1.5f, 2f, 2.5f, 3f })
+            if (GUILayout.Button($"x{s:0.#}")) Plugin.UiScale.Value = s;
         GUILayout.EndHorizontal();
         GUILayout.Space(10);
         GUILayout.Label($"메뉴 키: {Plugin.ToggleKey.Value}  (BepInEx/config/{Plugin.Guid}.cfg 에서 변경)");

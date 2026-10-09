@@ -5,7 +5,7 @@
   - 폰트: 게임 폴백 폰트에 한글 글리프 병합 (Noto Serif KR, SIL OFL)
   - 이미지: 한글화한 텍스처로 교체
   - UI: 원본에서 빠진 스프라이트 에셋 연결 (아이콘 태그가 글자로 나오는 문제)
-  - (선택) 치트 메뉴: BepInEx 6 + 치트 플러그인 (F1)
+  - (선택) 치트 메뉴: BepInEx 6 + 치트 플러그인 (F8)
 원본은 게임 폴더의 KoreanPatch_backup/ 에 보관하고, 메뉴에서 복구할 수 있다.
 
 Steam 실행 옵션 `"...\\CardCultivation_KoreanPatch.exe" --auto %command%` 로 실행하면
@@ -450,7 +450,7 @@ def install_cheat(game: Path, patch: Patch) -> bool:
     bdir.mkdir(parents=True, exist_ok=True)
     cheat_p.write_text(json.dumps(cheat, indent=1), encoding="utf-8")
     print()
-    print("치트 메뉴 설치 완료! 게임 안에서 F1 키로 엽니다.")
+    print("치트 메뉴 설치 완료! 게임 안에서 F8 키로 엽니다.")
     print("  - 설치 후 첫 실행은 BepInEx 준비 때문에 몇 분 걸립니다 (검은 콘솔 창이 함께 뜹니다).")
     print("  - 치트를 쓰기 전에 세이브 폴더를 백업해 두세요:")
     print("   ", SAVE_DIR)
@@ -608,7 +608,7 @@ def main():
             "2) 원본으로 복구 (패치" + (" + 치트 메뉴" if patch.cheat else "") + " 제거)",
             "3) 스팀 업데이트 후 자동 재적용 설정"]
     if patch.cheat:
-        menu.append("4) 한글 패치 + 치트 메뉴(F1) 설치")
+        menu.append("4) 한글 패치 + 치트 메뉴(F8) 설치")
     menu.append(f"{len(menu) + 1}) 종료")
     for m in menu:
         print("  " + m)

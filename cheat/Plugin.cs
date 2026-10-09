@@ -23,12 +23,15 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<bool> AlliesInvincible;
     internal static ConfigEntry<bool> InfiniteEnergy;
     internal static ConfigEntry<float> GameSpeed;
+    internal static ConfigEntry<float> UiScale;
 
     public override void Load()
     {
         Logger = Log;
 
-        ToggleKey = Config.Bind("일반", "메뉴키", KeyCode.F1, "치트 메뉴 열기/닫기 키");
+        ToggleKey = Config.Bind("일반", "메뉴키", KeyCode.F8, "치트 메뉴 열기/닫기 키");
+        if (ToggleKey.Value == KeyCode.F1) ToggleKey.Value = KeyCode.F8; // F1 은 게임이 쓰는 키라 옛 기본값을 옮긴다
+        UiScale = Config.Bind("일반", "UI배율", 0f, "치트 창 크기 배율 (0 = 화면 해상도에 맞춰 자동, 1080p 기준 1)");
         GodMode = Config.Bind("전투", "무적", false, "주인공이 피해를 받지 않음");
         AlliesInvincible = Config.Bind("전투", "아군무적", false, "주인공 외 아군 카드(영수/꼭두각시/동료 등)도 피해를 받지 않음");
         OneHitKill = Config.Bind("전투", "적즉사", false, "적에게 주는 피해가 항상 치명타");
