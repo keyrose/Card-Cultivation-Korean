@@ -1,6 +1,6 @@
 """배포용 패치 설치 파일 만들기.
 
-python release.py 1.1.0 [--cheat 치트.dll]
+python release.py 1.0.4 [--cheat 치트.dll]
 
 1. build.py 를 돌리면서 바꾼 이미지를 모두 모은다
 2. dist/payload/ 에 번역(ko.json), 이미지(PNG, 중복 제거), 한글 글꼴, manifest.json 작성
@@ -190,7 +190,7 @@ if __name__ == "__main__":
         i = args.index("--cheat")
         cheat_src = Path(args[i + 1])
         del args[i:i + 2]
-    ver = args[0] if args and not args[0].startswith("--") else "1.1.0"
+    ver = args[0] if args and not args[0].startswith("--") else "1.0.4"
     if "--exe-only" not in args:
         make_payload(ver)
     add_cheat(cheat_src)

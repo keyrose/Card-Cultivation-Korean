@@ -71,7 +71,7 @@ GitHub Releases 의 `CardCultivation_KoreanPatch_vX.Y.Z.zip` 을 받아 exe 실�
 
 이미 BepInEx 가 있으면 플러그인만 넣는다. 2번(복구)은 치트 플러그인과, 패치가 설치한 BepInEx 만 지운다.
 
-릴리스 만들기: `cd tools && python release.py 1.1.0` → `dist/CardCultivation_KoreanPatch_v1.1.0.zip`
+릴리스 만들기: `cd tools && python release.py 1.0.4` → `dist/CardCultivation_KoreanPatch_v1.0.4.zip`
 (PyInstaller 필요: `pip install pyinstaller`)
 - 치트 메뉴 포함: 먼저 `cd cheat && dotnet build -c Release` (기본 경로의 DLL 을 자동으로 넣음, 다른 DLL 은 `--cheat 경로`)
   → 온라인판과 `..._offline.zip` 이 함께 만들어진다. BepInEx 버전은 `installer.py` 의 `BEPINEX_*` 에 고정.
